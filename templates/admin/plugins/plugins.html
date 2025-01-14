@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../static/admin/plugins/plugins.css">
+    <link rel="stylesheet" href="../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../static/admin/sidebar.css">
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+
+<div id="main-content">
+    {% include 'navbar.html' %}
+    <div id="content">
+        <main>
+            <div class="plugins">
+                {% if plugins|length == 0 %}
+                <p id="noPluginsText">Brak zainstalowanych wtyczek!
+                    Aby zainstalować wtyczkę umieść ją w folderze <b>/plugins/</b></p>
+                {% endif %}
+
+                {% for plugin in plugins %}
+
+                <div class="plugin-item plugin-card">
+                    <div class="plugin-content">
+                        <div class="plugin-name">{{ plugin["name"] }}</div>
+                        <div class="plugin-version">{{ plugin["version"] }}</div>
+                        <div class="plugin-description">{{ plugin["description"] }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+</body>
+
+</html>

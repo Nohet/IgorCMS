@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../../static/admin/posts/add/create_post.css">
+    <link href="../../../../static/quill/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../../static/admin/sidebar.css">
+    <link rel="stylesheet" href="../../../static/admin/forms.css">
+    <script src="../../../../static/quill/quill.min.js"></script>
+    <script src="../../../../static/quill/quill.imageUploader.min.js"></script>
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+
+<div id="main-content">
+    {% include 'navbar.html' %}
+
+    <div id="content">
+        <form method="post" action="">
+            {% for message in messages %}
+            <div id="message">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+            <p>Tytuł *</p>
+            <input type="text" value="{{ data[0] }}" name="title" id="title" required>
+
+            <p>Treść *</p>
+            <textarea name="post_content" id="post_content" required style="display:none;">{{ data[1]|safe }}</textarea>
+
+            <div id="texteditor" style="height: 300px;"></div>
+
+            <p>Krótki opis</p>
+            <input type="text" value="{{ data[2] }}" name="excerpt" id="excerpt">
+
+            <p>Tagi</p>
+            <input type="text" value="{{ data[3] }}" name="tags" id="tags">
+
+            <p>Obrazek Wyróżniony</p>
+            <input type="file" name="image"
+                   accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="image"><br>
+            <input style="display: none;" value="{{ data[4] }}" type="text" name="featured_image"
+                   id="featured_image"><br>
+
+
+            <p>Komentarze włączone</p>
+            <select name="comments_enabled">
+                <option value="1">Tak</option>
+                <option value="0">Nie</option>
+            </select><br>
+
+            <p>Kategoria</p>
+            <select name="category">
+                <option value="None">Bez kategorii</option>
+                {% for category in categories %}
+                <option value="{{ category[0] }}">{{ category[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <p>Status</p>
+            <select name="status">
+                <option value="published">Publikacja</option>
+                <option value="draft">Szkic</option>
+            </select><br>
+
+            <input id="submitButton" type="submit" value="Zapisz zmiany">
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('image').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (file) {
+                document.getElementById("featured_image").value = file.name;
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                console.log('No file selected.');
+            }
+        });
+
+        Quill.register('modules/imageUploader', window.ImageUploader);
+
+        var quill = new Quill('#texteditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'script': 'sub' }, { 'script': 'super' }],     // superscript/subscript
+                    [{ 'indent': '-1' }, { 'indent': '+1' }],         // outdent/indent
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    ['link', 'image', 'video'],                       // link and media
+                    ['clean'],                                        // remove formatting button
+                    ['table']                                         // table support
+                ],
+                imageUploader: {
+                    upload: file => {
+                        return new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const dataUri = e.target.result;
+
+                                fetch('/api/upload-file', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        image: dataUri,
+                                        filename: file.name,
+                                        uploadKey: "{{ API_UPLOAD_KEY|safe }}"
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (result.path) {
+                                        resolve(result.path);
+                                    } else {
+                                        reject('Invalid response from server');
+                                    }
+                                })
+                                .catch(error => {
+                                    reject('Upload failed');
+                                    console.error('Error:', error);
+                                });
+                            };
+
+                            reader.readAsDataURL(file);
+                        });
+                    }
+                }
+            }
+        });
+
+        quill.root.innerHTML = document.getElementById('post_content').value
+
+        quill.on('text-change', function () {
+            document.getElementById('post_content').value = quill.root.innerHTML;
+        });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../static/admin/image_gallery/image_gallery.css">
+    <link rel="stylesheet" href="../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../static/admin/sidebar.css">
+</head>
+
+<body>
+    {% include 'sidebar.html' %}
+
+    <div id="main-content">
+        {% include 'navbar.html' %}
+        <div id="content">
+            <main>
+                <p id="uploadPhotoText">Prześlij zdjęcie:</p>
+                <input type="file" id="new_image" name="new_image">
+
+                <div class="gallery">
+                    {% for image in images%}
+                    <div onclick="window.open('/static/image_storage/{{ image }}', '_blank');" class="gallery-item">
+                        <img src="/static/image_storage/{{ image }}" alt="Zdjęcie 1">
+                        <div class="image-caption">{{ image }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </main>
+        </div>
+    </div>
+    <script>
+        document.getElementById('new_image').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+                    };
+
+                    reader.readAsDataURL(file);
+
+                } else {
+                    console.log('No file selected.');
+                }
+            });
+    </script>
+</body>
+
+</html>

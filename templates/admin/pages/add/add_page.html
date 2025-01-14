@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../../static/admin/pages/add/add_page.css">
+    <link href="../../../../static/quill/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../../static/admin/sidebar.css">
+    <link rel="stylesheet" href="../../../static/admin/forms.css">
+    <script src="../../../../static/quill/quill.min.js"></script>
+    <script src="../../../../static/quill/quill.imageUploader.min.js"></script>
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+
+<div id="main-content">
+    {% include 'navbar.html' %}
+
+    <div id="content">
+
+        <form method="post" action="">
+            {% for message in messages %}
+            <div id="message">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+            <p>Tytuł *</p>
+            <input type="text" name="title" id="title" required>
+
+            <p>Treść</p>
+            <textarea name="page_content" id="page_content" style="display:none;"></textarea>
+
+            <div id="texteditor" style="height: 300px;"></div>
+
+            <p>Nazwa na pasku górnym</p>
+            <input type="text" name="navbar_title" id="navbar_title">
+
+            <p>Meta tytuł</p>
+            <input type="text" name="meta_title" id="meta_title">
+
+            <p>Meta opis</p>
+            <input type="text" name="meta_description" id="meta_description">
+
+            <p>Meta słowa kluczowe</p>
+            <input type="text" name="meta_keywords" id="meta_keywords">
+
+            <p>Adres przekierowania URL</p>
+            <input type="text" name="redirect_url" id="redirect_url">
+
+            <p>Język strony</p>
+            <input type="text" name="language" id="language" value="en">
+
+
+            <p>Pozycja na pasku górnym</p>
+            <select name="display">
+                <option value="center">Środek</option>
+                <option value="right">Prawo</option>
+            </select>
+
+
+            <p>Meta roboty</p>
+            <select name="meta_robots">
+                <option value="index, follow">index, follow</option>
+                <option value="noindex, follow">noindex, follow</option>
+                <option value="index, nofollow">index, nofollow</option>
+                <option value="noindex, nofollow">noindex, nofollow</option>
+            </select>
+
+
+            <p>Kategoria</p>
+            <select name="category">
+                <option value="None">Bez kategorii</option>
+                {% for category in categories %}
+                <option value="{{ category[0] }}">{{ category[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+
+            <p>Pokazywać na pasku górnym?</p>
+            <select name="show_in_menu">
+                <option value="1">Tak</option>
+                <option value="0">Nie</option>
+            </select><br>
+
+            <p>Ikona strony</p>
+            <input type="file" name="icon"
+                   accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="icon"><br>
+
+
+            <input id="submitButton" type="submit" value="Utwórz stronę">
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('icon').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            console.log('No file selected.');
+        }
+    });
+
+
+    Quill.register('modules/imageUploader', window.ImageUploader);
+
+    var quill = new Quill('#texteditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'script': 'sub' }, { 'script': 'super' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+
+                ['link', 'image', 'video'],
+                ['clean'],
+                ['table']
+            ],
+            imageUploader: {
+                upload: file => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            const dataUri = e.target.result;
+
+                            fetch('/api/upload-file', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    image: dataUri,
+                                    filename: file.name,
+                                    uploadKey: "{{ API_UPLOAD_KEY|safe }}"
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.path) {
+                                    resolve(result.path);
+                                } else {
+                                    reject('Invalid response from server');
+                                }
+                            })
+                            .catch(error => {
+                                reject('Upload failed');
+                                console.error('Error:', error);
+                            });
+                        };
+
+                        reader.readAsDataURL(file);
+                    });
+                }
+            }
+        }
+    });
+
+    quill.on('text-change', function () {
+        document.getElementById('page_content').value = quill.root.innerHTML;
+    });
+</script>
+</body>
+
+</html>

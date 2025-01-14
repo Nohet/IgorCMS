@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Add category</title>
+    <link rel="stylesheet" href="../../../static/admin/categories/add/add_category.css">
+    <link rel="stylesheet" href="../../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../../static/admin/sidebar.css">
+    <link rel="stylesheet" href="../../../static/admin/forms.css">
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+
+<div id="main-content">
+    {% include 'navbar.html' %}
+
+    <div id="content">
+        <form method="post" action="">
+            {% for message in messages %}
+            <div id="message">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+            <h3>Dodawanie nowej kategorii</h3>
+
+            <p>Nazwa *</p>
+            <input type="text" name="name" id="name" required>
+
+            <p>Opis</p>
+            <input type="text" name="description" id="description">
+
+            <p>Kategoria nadrzędna</p>
+            <select name="parent_id">
+                <option value="None">Brak</option>
+                {% for category in categories %}
+                <option value="{{ category[0] }}">{{ category[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <input id="submitButton" type="submit" value="Dodaj kategorię">
+        </form>
+    </div>
+</div>
+</body>
+
+</html>

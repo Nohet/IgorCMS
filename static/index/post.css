@@ -1,0 +1,175 @@
+@font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('../HankenGrotesk.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Hanken Grotesk', sans-serif;
+}
+
+nav {
+    background: #000;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.right-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.right-container a {
+    color: white;
+    text-decoration: none;
+}
+
+.hero-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    margin: 1rem 0;
+    color: #666;
+}
+
+.breadcrumb a {
+    color: #666;
+    text-decoration: none;
+}
+
+.article-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.article-meta {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.article-content {
+    line-height: 1.6;
+    color: #333;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin: 2rem 0 1rem 0;
+}
+
+.comments-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+        .comment {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .comment-author {
+            font-weight: bold;
+        }
+        .comment-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+        .comment-content {
+            line-height: 1.6;
+        }
+
+
+.comments-toggle {
+    background: #000;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.comment-form {
+    margin-top: 2rem;
+    display: none;
+}
+
+.comment-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group textarea,
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+}
+
+.form-group textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.required {
+    color: red;
+}
+
+.form-disclaimer {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.submit-button {
+    background: #000;
+    color: white;
+    padding: 0.5rem 2rem;
+    border: none;
+    cursor: pointer;
+}

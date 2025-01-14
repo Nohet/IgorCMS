@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="{{ info[6] }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ info[0] }}</title>
+    {% if info[1] %}
+    <link rel="icon" href="/static/image_storage/{{ info[1] }}">
+    {% endif %}
+    <meta property="og:title" content="{{ info[2] }}">
+    <meta name="description" content="{{ info[3] }}">
+    <meta name="keywords" content="{{ info[4] }}">
+    <meta name="robots" content="{{ info[5] }}">
+    <link rel="stylesheet" href="../../static/index/index.css">
+</head>
+<body>
+    <nav>
+        <a href="#" class="nav-brand">{{ info[7] }}</a>
+        <div class="nav-links">
+            {% for page in pages_center %}
+            <a href="/{{ page[2] }}">{{ page[1] }}</a>
+            {% endfor %}
+        </div>
+        <div class="right-container">
+            {% for page in pages_right %}
+            <a href="/{{ page[2] }}">{{ page[1] }}</a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="grid">
+            {% for post in posts %}
+                {% set outer_index = loop.index %}
+                {% for article in post %}
+                    {% set is_featured = (outer_index % 2 != 0 and loop.index0 == 0) or
+                                       (outer_index % 2 == 0 and loop.index0 == 2) %}
+
+                    <article onclick="location.href = '/{{ title_to_slug(article[3]) if article[3] else 'bez-kategorii' }}/{{ article[5] }}'"
+                             class="article {{ 'featured' if is_featured }}">
+                        {% if article[2] %}
+                            <img src="/static/image_storage/{{ article[2] }}" alt="Article Image">
+                        {% endif %}
+                        <div class="article-content">
+                            {% if article[3] %}
+                                <div class="article-tag">{{ article[3] }}</div>
+                            {% endif %}
+                            <h2 class="article-title">{{ article[0] }}</h2>
+                            <div class="article-date">{{ article[1] }}</div>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

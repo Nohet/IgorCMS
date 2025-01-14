@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Setup</title>
+    <link rel="stylesheet" href="../static/setup/style.css">
+</head>
+
+<body>
+<div id="main">
+    <form method="post" action="">
+        <h3>Skonfiguruj baze danych</h3>
+        {% for msg in message %}
+        <div id="message">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+            <p>{{ msg }}</p>
+        </div>
+        {% endfor %}
+
+        <p>Adres hosta:</p>
+        <input required name="hostname" id="hostname" type="text" placeholder="127.0.0.1">
+        <p>Port:</p>
+        <input required name="port" id="port" type="number" placeholder="3306">
+        <p>Nazwa bazy danych:</p>
+        <input required name="dbname" id="dbname" type="text" placeholder="cms">
+        <p>Nazwa użytkownika:</p>
+        <input required name="username" id="username" type="text" placeholder="root">
+        <p>Hasło do bazy danych:</p>
+        <input name="dbpass" id="dbpass" type="password" placeholder="********">
+        <input id="submitButton" type="submit" value="Kontynuuj"/>
+    </form>
+</div>
+</body>
+
+</html>

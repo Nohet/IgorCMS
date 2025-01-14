@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../static/admin/settings/settings.css">
+    <link rel="stylesheet" href="../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../static/admin/sidebar.css">
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+<div id="main-content">
+    {% include 'navbar.html' %}
+    <div id="content">
+        {% if permissions == 3 %}
+        <aside id="aside1">
+            <div id="general_settings">
+                <p>Ustawienia ogólne</p>
+                <hr>
+                <form method="post" action="">
+                    {% for message in messages %}
+                    <div id="message">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+
+                        <p>{{ message }}</p>
+                    </div>
+                    {% endfor %}
+                    <input name="form_type" value="general_settings" style="display: none;"/>
+                    <p>Nazwa strony</p>
+                    <input value="{{ index_page[0] }}" type="text" name="site_name" id="site_name">
+                    <p>Logo strony</p>
+                    <input type="file"
+                           accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="image">
+                    <input style="display: none;" value="{{ index_page[1]|safe }}" type="text" name="site_icon"
+                           accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="site_icon"><br>
+                    <p>Tytuł meta</p>
+                    <input value="{{ index_page[2] }}" type="text" name="meta_title" id="meta_title">
+                    <p>Opis meta</p>
+                    <input value="{{ index_page[3] }}" type="text" name="meta_desc" id="meta_desc">
+                    <p>Meta słowa kluczowe</p>
+                    <input value="{{ index_page[4] }}" type="text" placeholder="sport, pływanie" name="meta_keywords"
+                           id="meta_keywords">
+                    <p>Meta robots</p>
+                    <select name="meta_robots">
+                        <option value="index, follow">index, follow</option>
+                        <option value="noindex, follow">noindex, follow</option>
+                        <option value="index, nofollow">index, nofollow</option>
+                        <option value="noindex, nofollow">noindex, nofollow</option>
+                    </select>
+
+                    <p>Język strony</p>
+                    <input value="{{ index_page[5] }}" type="text" name="site_language" id="site_language"><br>
+                    <input type="submit" value="Zaktualizuj ustawienia">
+
+                </form>
+
+            </div>
+
+        </aside>
+        {% endif %}
+        <aside id="aside2">
+
+            <div id="passchange">
+                <p class="firstp">Zmień hasło</p>
+                <hr>
+                <form method="post" action="">
+                    <input name="form_type" value="password_settings" style="display: none;"/>
+                    <p>Stare hasło *</p>
+                    <input type="password" name="old_pass" id="old_pass" required>
+                    <p>Nowe hasło *</p>
+                    <input type="password" name="new_pass" id="new_pass" required>
+
+                    <input type="submit" value="Zmień hasło">
+                </form>
+                <hr>
+
+            </div>
+            <div id="api_keys">
+                <p class="firstp">Klucze API</p>
+                <button onclick="location.href = '/admin/settings/generate-api-key'" id="generateApiKey">Generuj klucz
+                    api
+                </button>
+                <hr>
+                <ul>
+                    {% for key in api_keys %}
+                    <li>
+                        {{ key[0]|safe }}
+                        <button onclick="location.href = '/admin/settings/delete-api-key?key={{ quote_plus(key[0])}}'"
+                                class="delete-button">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
+                            </svg>
+                        </button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+
+            </div>
+
+        </aside>
+    </div>
+</div>
+<script>
+    document.getElementById('image').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (file) {
+                document.getElementById("site_icon").value = file.name;
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+                };
+                console.log(123);
+
+                reader.readAsDataURL(file);
+            } else {
+                console.log('No file selected.');
+            }
+        });
+</script>
+</body>
+
+</html>

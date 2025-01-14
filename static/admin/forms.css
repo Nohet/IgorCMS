@@ -1,0 +1,64 @@
+form {
+    width: 50%;
+    margin: 2rem auto 0;
+    background-color: #ffffff;
+    padding: 2rem 5rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form input[type="file"],
+form select {
+    width: 80%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="file"],
+form select {
+    cursor: pointer;
+}
+
+form select,
+form input[type="file"] {
+    background-color: #fff;
+}
+
+form input:focus,
+form select:focus {
+    border-color: #0F52BA;
+    outline: none;
+}
+
+form input:hover,
+form select:hover {
+    border-color: #0F52BA;
+}
+
+#submitButton {
+    margin-top: 2%;
+    width: 80%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    background-color: #0F52BA;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#submitButton:hover {
+    background-color: #084298;
+    transform: scale(1.02);
+}
+
+#submitButton:active {
+    background-color: #062c78;
+}

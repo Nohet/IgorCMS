@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="{{ info[2] }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post[1] }}</title>
+    {% if info[4] %}
+    <link rel="icon" href="/static/image_storage/{{ info[4] }}">
+    {% endif %}
+    <meta property="og:title" content="{{ post[1] }}">
+    <meta name="description" content="{{ post[4] }}">
+    <meta name="keywords" content="{{ post[8] }}">
+    <meta name="robots" content="{{ info[1] }}">
+    <link rel="stylesheet" href="../../static/index/post.css">
+    <link rel="stylesheet" href="../../static/index/quill_read.css">
+</head>
+
+<body>
+<nav>
+    <a href="/" class="nav-brand">{{ info[3] }}</a>
+    <div class="nav-links">
+        {% for page in pages_center %}
+        <a href="/{{ page[2] }}">{{ page[1] }}</a>
+        {% endfor %}
+
+    </div>
+    <div class="right-container">
+        {% for page in pages_right %}
+        <a href="/{{ page[2] }}">{{ page[1] }}</a>
+        {% endfor %}
+    </div>
+</nav>
+<div class="container">
+    {% if post[6] %}
+    <img src="/static/image_storage/{{ post[6] }}" alt="Zdjecie przedstawiające nawiązanie do treści posta"
+         class="hero-image">
+    {% endif %}
+    <div class="breadcrumb">
+        <a href="/">Home</a> >
+        {% if not post[0] %}
+                <a href="/">Bez kategorii</a> >
+        {% else %}
+        <a href="/">{{ post[0] }}</a> >
+        {% endif %}
+        {{ post[1] }}
+    </div>
+    <h1 class="article-title">{{ post[1] }}</h1>
+    <div class="article-meta">
+        {{ post[2] }} • {{ post[3] }}
+    </div>
+    <div class="article-content">
+        {% if post[4] %}
+        <p>{{ post[4] }}</p>
+        {% endif %}
+
+        {{ post[5]|safe }}
+    </div>
+    <div class="comments-section">
+        <div onclick="handleShow()" class="comments-toggle">POKAŻ KOMENTARZE ({{comments|length}}) v</div>
+
+        <div class="comment-form">
+            {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-author">{{ comment[0] }}</div>
+                <div class="comment-meta">{{ comment[2] }}</div>
+                <div class="comment-content">
+                    {{ comment[1] }}
+                </div>
+            </div>
+            {% endfor %}
+
+            <h2>Dodaj komentarz</h2>
+            <p class="form-disclaimer">Twój adres e-mail nie zostanie opublikowany. Wymagane pola są oznaczone *</p>
+
+            <form action="" method="post">
+                <div class="form-group">
+                    <label>Nazwa <span class="required">*</span></label>
+                    <input type="text" name="author" required>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail <span class="required">*</span></label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Komentarz <span class="required">*</span></label>
+                    <textarea name="content" required></textarea>
+                </div>
+
+
+                <button type="submit" class="submit-button">WYŚLIJ</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</div>
+<script>
+    let toggled = false
+
+    let handleShow = () => {
+        document.getElementsByClassName("comment-form")[0].style.display = toggled ? "none" : "inline"
+        let el = document.getElementsByClassName("comments-toggle")[0]
+
+        el.textContent = el.textContent.slice(0, -2) + " " + (toggled ? "v" : "^")
+
+        toggled = !toggled
+    }
+</script>
+</body>
+
+</html>

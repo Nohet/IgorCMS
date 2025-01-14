@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../../static/admin/pages/view/show_pages.css">
+    <link rel="stylesheet" href="../../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../../static/admin/sidebar.css">
+</head>
+
+<body>
+    {% include 'sidebar.html' %}
+
+    <div id="main-content">
+        {% include 'navbar.html' %}
+
+        <div id="content">
+            <button onclick="location.href = '/admin/pages/add'" id="addPage"><svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
+                </svg>Dodaj nową stronę</button>
+
+            <table id="posts_table">
+                <thead>
+                    <tr>
+                        <th>
+                            <p class="headingp">Identyfikator </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Przyjazny dla użytkownika adres URL </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Tytuł</p>
+                        </th>
+                        <th>
+                            <p class="headingp">Autor</p>
+                        </th>
+                        <th>
+                            <p class="headingp">Data utworzenia</p>
+                        </th>
+                        <th>
+                            <p class="headingp">Meta tytuł </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Meta opis </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Meta słowa kluczowe </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Meta roboty </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Adres przekierowania URL</p>
+                        </th>
+                        <th>
+                            <p class="headingp">Strona nadrzędna </p>
+                        </th>
+                        <th>
+                            <p class="headingp">Pokazywana w pasku górnym?</p>
+                        </th>
+                        <th>
+                            <p class="headingp">Kategoria</p>
+                        </th>
+
+                    </tr>
+                </thead>
+<tbody>
+    {% for page in pages %}
+    <tr>
+        <td><p>{{ page[0] }}</p></td>
+        <td>{% if not page[1] %}<p>Brak</p>{% else %}<p>{{ page[1] }}</p>{% endif %}</td>
+        <td>{% if not page[2] %}<p>Brak</p>{% else %}<p>{{ page[2] }}</p>{% endif %}</td>
+        <td>{% if not page[3] %}<p>Brak</p>{% else %}<p>{{ page[3] }}</p>{% endif %}</td>
+        <td>{% if not page[4] %}<p>Brak</p>{% else %}<p>{{ page[4] }}</p>{% endif %}</td>
+        <td>{% if not page[5] %}<p>Brak</p>{% else %}<p>{{ page[5] }}</p>{% endif %}</td>
+        <td>{% if not page[6] %}<p>Brak</p>{% else %}<p>{{ page[6] }}</p>{% endif %}</td>
+        <td>{% if not page[7] %}<p>Brak</p>{% else %}<p>{{ page[7] }}</p>{% endif %}</td>
+        <td><p>{{ page[8] }}</p></td>
+        <td>{% if not page[9] %}<p>Brak</p>{% else %}<p>{{ page[9] }}</p>{% endif %}</td>
+        <td>{% if not page[10] %}<p>Brak</p>{% else %}<p>{{ page[10] }}</p>{% endif %}</td>
+        <td><p>{{ {0: "Nie", 1: "Tak"}[page[11]] }}</p></td>
+        <td>{% if not page[12] %}<p>Brak</p>{% else %}<p>{{ page[12] }}</p>{% endif %}</td>
+        <td>
+            <button onclick="location.href = '/admin/pages/edit?id={{ page[0] }}'" class="edit-button">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M16.414 3.586a2 2 0 112.828 2.828L10 15H6v-4l10.414-10.414z" />
+                </svg>
+            </button>
+            <button onclick="location.href = '/admin/pages/delete?id={{ page[0] }}'" class="delete-button">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3" />
+                </svg>
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

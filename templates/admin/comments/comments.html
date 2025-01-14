@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../../static/admin/comments/comments.css">
+    <link rel="stylesheet" href="../../static/admin/navbar.css">
+    <link rel="stylesheet" href="../../static/admin/sidebar.css">
+
+</head>
+
+<body>
+{% include 'sidebar.html' %}
+<div id="main-content">
+    {% include 'navbar.html' %}
+    <div id="content">
+        <input oninput="handleDataFilter()" type="text" id="filter" placeholder="Filtruj wyniki...">
+        <table id="posts_table">
+            <thead>
+            <tr>
+                <th>
+                    <p class="headingp">Autor</p>
+                </th>
+                <th>
+                    <p class="headingp">Treść</p>
+                </th>
+                <th>
+                    <p class="headingp">W odpowiedzi na</p>
+                </th>
+                <th>
+                    <p class="headingp">Data</p>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for comment in comments %}
+            <tr>
+                <td>
+                    <p>{{ comment[0] }}</p>
+                </td>
+                <td>
+                    <p>{{ comment[1] }}</p>
+                </td>
+                <td>
+                    <a href="asdasd">{{ comment[2] }}</a>
+                </td>
+                <td>
+                    <p>{{ comment[3] }}</p>
+                </td>
+                {% if permissions == 3 %}
+                <td>
+                    <button onclick="location.href = '/admin/comments/delete?id={{ comment[4] }}'" class="delete-button">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
+                        </svg>
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    let lastLength = 0
+
+    let handleDataFilter = () => {
+        let tableRows = document.getElementsByTagName("tr")
+
+        let query = document.getElementById("filter").value
+
+        if (query.length < lastLength) {
+            for (const row of tableRows) {
+                row.style.display = "table-row"
+            }
+
+        }
+
+        lastLength = query.length
+
+        for (let x = 1; x <= tableRows.length - 1; x++) {
+            let disableRow = true
+
+            for (const children of tableRows[x].children) {
+                if (children.textContent.toLowerCase().includes(query.toLowerCase())) {
+                    disableRow = false
+                }
+
+            }
+
+            if (disableRow) {
+                tableRows[x].style.display = "none"
+            }
+        }
+    }
+</script>
+
+</body>
+
+</html>

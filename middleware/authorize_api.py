@@ -12,7 +12,7 @@ class CheckAuthorizedApi(BaseHTTPMiddleware):
 
         if not await request.body():
             return response_message("error",
-                                    "The api key that you provided is either invalid or you didn't provide the key at all!")
+                                    "The api key that you provided is either invalid or you didn't provide the key at all!", code=401)
 
         json_data = await request.json()
         api_key = json_data.get("api_key")
@@ -27,13 +27,13 @@ class CheckAuthorizedApi(BaseHTTPMiddleware):
                 permissions = await cursor.fetchone()
 
                 if not permissions:
-                    return response_message("error", "The api key that you provided is invalid!")
+                    return response_message("error", "The api key that you provided is invalid!", code=401)
 
                 if permissions[0] == 2 and (
                         any(i in request.url.path for i in ["categories", "pages"]) or
                         request.method == "DELETE"
                 ):
-                    return response_message("error", "You do not have permissions to use this endpoint!")
+                    return response_message("error", "You do not have permissions to use this endpoint!", code=403)
 
         response = await call_next(request)
         return response

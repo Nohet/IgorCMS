@@ -1,4 +1,7 @@
-async def create_tables(cursor):
+import aiomysql
+
+
+async def create_tables(cursor: aiomysql.Cursor):
     create_table_queries = [
         """
         CREATE TABLE IF NOT EXISTS `api_keys` (

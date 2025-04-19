@@ -18,7 +18,7 @@ async def admin_edit_category(request: Request):
             if form_data:
                 name = form_data.get("name")
                 description = form_data.get("description")
-                parent_id = eval(form_data.get("parent_id"))
+                parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
 
                 await cursor.execute("""UPDATE categories SET name=%s, description=%s, parent_id=%s, 
                 updated_at=CURRENT_TIMESTAMP() WHERE id = %s""",
@@ -64,7 +64,7 @@ async def admin_add_category(request: Request):
             if form_data:
                 name = form_data.get("name")
                 description = form_data.get("description")
-                parent_id = eval(form_data.get("parent_id"))
+                parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
 
                 await cursor.execute("INSERT INTO categories(name, description, parent_id) VALUES (%s, %s, %s)",
                                      (name, description, parent_id))

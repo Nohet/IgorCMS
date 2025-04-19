@@ -27,7 +27,7 @@ async def admin_edit_page(request: Request):
                 language = form_data.get("language")
                 display = form_data.get("display")
                 meta_robots = form_data.get("meta_robots")
-                category = eval(form_data.get("category"))
+                category = int(form_data.get("category")) if form_data.get("category") and form_data.get("category").isdigit() else None
                 show_in_menu = int(form_data.get("show_in_menu"))
                 site_icon = form_data.get("site_icon")
 
@@ -119,7 +119,7 @@ async def admin_add_page(request: Request):
                 display = form_data.get("display")
                 meta_robots = form_data.get("meta_robots")
                 language = form_data.get("language")
-                category = eval(form_data.get("category"))
+                category = int(form_data.get("category")) if form_data.get("category") and form_data.get("category").isdigit() else None
                 show_in_menu = int(form_data.get("show_in_menu"))
 
                 await cursor.execute("""INSERT INTO pages (slug, image, title, content, display, author_id,

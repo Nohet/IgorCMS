@@ -23,7 +23,7 @@ async def admin_edit_post(request: Request):
                 tags = form_data.get("tags")
                 featured_image = form_data.get("featured_image")
                 comments_enabled = int(form_data.get("comments_enabled"))
-                category = eval(form_data.get("category"))
+                category = int(form_data.get("category")) if form_data.get("category") and form_data.get("category").isdigit() else None
                 status = form_data.get("status")
 
                 await cursor.execute("""
@@ -108,7 +108,7 @@ async def admin_add_post(request: Request):
                 tags = form_data.get("tags")
                 featured_image = form_data.get("featured_image")
                 comments_enabled = int(form_data.get("comments_enabled"))
-                category_id = eval(form_data.get("category"))
+                category_id = int(form_data.get("category")) if form_data.get("category") and form_data.get("category").isdigit() else None
                 status = form_data.get("status")
 
                 await cursor.execute("""INSERT INTO posts(slug, title, content, excerpt, author_id, status, tags, featured_image, comments_enabled, category_id) 

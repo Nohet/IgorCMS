@@ -4,7 +4,7 @@ from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from definitions.static import SECRET_KEY, API_UPLOAD_KEY
-from utils.text_utils import title_to_slug, normalize_text
+from utils.text_utils import sanitize_text
 
 templates = Jinja2Templates(directory='templates')
 
@@ -38,7 +38,7 @@ async def admin_edit_page(request: Request):
                 meta_title=%s,meta_description=%s,meta_keywords=%s,redirect_url=%s,
                 language=%s,display=%s,meta_robots=%s,category_id=%s,show_in_menu=%s,
                 image=%s,updated_at=CURRENT_TIMESTAMP()
-                WHERE id = %s""", (title, normalize_text(title_to_slug(title)), page_content, navbar_title, meta_title,
+                WHERE id = %s""", (title, sanitize_text(title), page_content, navbar_title, meta_title,
                                    meta_description, meta_keywords, redirect_url, language, display, meta_robots, category,
                                    show_in_menu, site_icon, page_id))
 
@@ -128,7 +128,7 @@ async def admin_add_page(request: Request):
                                         navbar_title, meta_title, meta_description, meta_keywords, meta_robots,
                                          language, redirect_url, show_in_menu, category_id)
                                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                                     (normalize_text(title_to_slug(title)), icon, title, page_content, display,
+                                     (sanitize_text(title), icon, title, page_content, display,
                                       token.get("user_id"),
                                       navbar_title, meta_title, meta_description, meta_keywords, meta_robots, language,
                                       redirect_url, show_in_menu, category))

@@ -3,7 +3,7 @@ from itertools import islice
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
-from utils.text_utils import title_to_slug
+from utils.text_utils import sanitize_text
 
 templates = Jinja2Templates(directory='templates')
 
@@ -36,7 +36,7 @@ async def index_page(request: Request):
             posts = list(iter(lambda: list(islice(iterator, 5)), []))
 
             return templates.TemplateResponse("index/index.html", {"request": request,
-                                                                   "title_to_slug": title_to_slug,
+                                                                   "sanitize_text": sanitize_text,
                                                                    "posts": posts,
                                                                    "pages_center": pages_center,
                                                                    "pages_right": pages_right,

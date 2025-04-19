@@ -5,7 +5,7 @@ from jinja2 import Template
 from starlette.requests import Request
 from starlette.responses import Response
 
-from utils.text_utils import title_to_slug
+from utils.text_utils import sanitize_text
 
 
 async def sitemap(request: Request):
@@ -18,7 +18,7 @@ async def sitemap(request: Request):
                                     FROM `posts` 
                                     LEFT JOIN categories ON categories.id = posts.category_id""")
             posts = await cursor.fetchall()
-            posts = [[(title_to_slug(post[0]) if post[0] else 'bez-kategorii'), post[1], post[2].strftime("%Y-%m-%d")]
+            posts = [[(sanitize_text(post[0]) if post[0] else 'bez-kategorii'), post[1], post[2].strftime("%Y-%m-%d")]
                      for post in posts]
 
             await cursor.execute("SELECT slug, updated_at FROM `pages` WHERE id != 1")

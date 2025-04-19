@@ -59,7 +59,7 @@
             {% for post in posts %}
             <tr>
                 <td>
-                    <a target="_blank" href="/{{ title_to_slug(post[2]) if post[2] else 'bez-kategorii' }}/{{ post[7] }}">{{ post[0] }}</a>
+                    <a target="_blank" href="/{{ sanitize_text(post[2]) if post[2] else 'bez-kategorii' }}/{{ post[7] }}">{{ post[0] }}</a>
                 </td>
                 <td>
                     <p>{{ post[1] }}</p>

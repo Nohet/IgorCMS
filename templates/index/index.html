@@ -36,7 +36,7 @@
                     {% set is_featured = (outer_index % 2 != 0 and loop.index0 == 0) or
                                        (outer_index % 2 == 0 and loop.index0 == 2) %}
 
-                    <article onclick="location.href = '/{{ title_to_slug(article[3]) if article[3] else 'bez-kategorii' }}/{{ article[5] }}'"
+                    <article onclick="location.href = '/{{ sanitize_text(article[3]) if article[3] else 'bez-kategorii' }}/{{ article[5] }}'"
                              class="article {{ 'featured' if is_featured }}">
                         {% if article[2] %}
                             <img src="/static/image_storage/{{ article[2] }}" alt="Article Image">

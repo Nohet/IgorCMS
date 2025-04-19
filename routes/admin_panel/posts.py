@@ -4,7 +4,7 @@ from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from definitions.static import SECRET_KEY, API_UPLOAD_KEY
-from utils.text_utils import title_to_slug, normalize_text
+from utils.text_utils import sanitize_text
 
 templates = Jinja2Templates(directory='templates')
 
@@ -34,7 +34,7 @@ async def admin_edit_post(request: Request):
                 excerpt=%s,tags=%s,featured_image=%s,comments_enabled=%s,
                 category_id=%s,status=%s, updated_at=CURRENT_TIMESTAMP(),editor_id=%s
                 WHERE id = %s
-                """, (title, normalize_text(title_to_slug(title)), post_content, excerpt, tags, featured_image,
+                """, (title, sanitize_text(title), post_content, excerpt, tags, featured_image,
                       comments_enabled,
                       category, status, token.get("user_id"), post_id))
                 messages.append("Pomyślnie zapisano zmiany!")
@@ -87,7 +87,7 @@ async def admin_show_posts(request: Request):
             posts = await cursor.fetchall()
 
             return templates.TemplateResponse("admin/posts/view/show_posts.html", {"request": request,
-                                                                                   "title_to_slug": title_to_slug,
+                                                                                   "sanitize_text": sanitize_text,
                                                                                    "posts": posts,
                                                                                    "firstname": token.get("firstname"),
                                                                                    "lastname": token.get("lastname"),
@@ -116,7 +116,7 @@ async def admin_add_post(request: Request):
 
                 await cursor.execute("""INSERT INTO posts(slug, title, content, excerpt, author_id, status, tags, featured_image, comments_enabled, category_id) 
                                 VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
-                    normalize_text(title_to_slug(title)), title, content, excerpt, token.get("user_id"), status, tags,
+                    sanitize_text(title), title, content, excerpt, token.get("user_id"), status, tags,
                     featured_image,
                     comments_enabled, category_id))
                 messages.append("Pomyślnie dodano nowy post!")

@@ -1,7 +1,7 @@
 from starlette.requests import Request
 
 from utils.responses import response_message
-from utils.text_utils import title_to_slug, normalize_text
+from utils.text_utils import sanitize_text
 
 
 async def api_get_posts(request: Request):
@@ -24,7 +24,7 @@ async def api_create_post(request: Request):
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             params = (
-                normalize_text(title_to_slug(data.get("title"))),
+                sanitize_text(data.get("title")),
                 data.get("title"),
                 data.get("content"),
                 data.get("excerpt"),
@@ -56,7 +56,7 @@ async def api_update_post(request: Request):
                 WHERE id = %s
             """
             params = (
-                normalize_text(title_to_slug(data.get("title"))),
+                sanitize_text(data.get("title")),
                 data.get("title"),
                 data.get("content"),
                 data.get("excerpt"),

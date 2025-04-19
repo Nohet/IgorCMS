@@ -1,7 +1,7 @@
 from starlette.requests import Request
 
 from utils.responses import response_message
-from utils.text_utils import title_to_slug, normalize_text
+from utils.text_utils import sanitize_text
 
 
 async def api_get_pages(request: Request):
@@ -24,7 +24,7 @@ async def api_create_page(request: Request):
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             params = (
-                normalize_text(title_to_slug(data.get("title"))),
+                sanitize_text(data.get("title")),
                 data.get("image"),
                 data.get("title"),
                 data.get("content"),
@@ -60,7 +60,7 @@ async def api_update_page(request: Request):
                 WHERE id = %s
             """
             params = (
-                normalize_text(title_to_slug(data.get("title"))),
+                sanitize_text(data.get("title")),
                 data.get("image"),
                 data.get("title"),
                 data.get("content"),

@@ -4,7 +4,7 @@ from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
 from definitions.static import SECRET_KEY
-from utils.text_utils import title_to_slug, normalize_text
+from utils.text_utils import sanitize_text
 
 templates = Jinja2Templates(directory='templates')
 
@@ -22,7 +22,7 @@ async def admin_homepage(request: Request):
                     "INSERT INTO posts(author_id, title, slug, content, status) VALUES (%s, %s, %s, %s, 'draft')",
                     (
                         author_id, form_data.get("title"),
-                        normalize_text(title_to_slug(form_data.get("title"))), form_data.get("content")))
+                        sanitize_text(form_data.get("title")), form_data.get("content")))
 
             await cursor.execute("SELECT COUNT(*) from posts;")
             post_count = (await cursor.fetchone())[0]

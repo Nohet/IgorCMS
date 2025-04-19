@@ -1,11 +1,20 @@
+import re
+
 import unicodedata
 
 
-def title_to_slug(title: str) -> str:
-    return title.replace("/", "").replace(" ", "-").lower()
+def sanitize_text(text: str) -> str:
+    text = text.lower()
 
+    text = unicodedata.normalize('NFD', text)
+    text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')
 
-def normalize_text(text: str) -> str:
-    normalized_text = unicodedata.normalize('NFD', text)
-    result = ''.join(c for c in normalized_text if unicodedata.category(c) != 'Mn')
-    return result
+    text = re.sub(r'[/\s?.,!@#$%^&*()+=\[\]{};:\'"\|\<>]', '-', text)
+
+    text = re.sub(r'[^a-zA-Z0-9\-]', '', text)
+
+    text = re.sub(r'-+', '-', text)
+
+    text = text.strip('-')
+
+    return text

@@ -1,12 +1,9 @@
 import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
 
-from definitions.static import SECRET_KEY, API_UPLOAD_KEY
+from definitions.static import SECRET_KEY, API_UPLOAD_KEY, templates
 from utils.text_utils import sanitize_text
-
-templates = Jinja2Templates(directory='templates')
 
 
 async def admin_edit_page(request: Request):
@@ -39,7 +36,8 @@ async def admin_edit_page(request: Request):
                 language=%s,display=%s,meta_robots=%s,category_id=%s,show_in_menu=%s,
                 image=%s,updated_at=CURRENT_TIMESTAMP()
                 WHERE id = %s""", (title, sanitize_text(title), page_content, navbar_title, meta_title,
-                                   meta_description, meta_keywords, redirect_url, language, display, meta_robots, category,
+                                   meta_description, meta_keywords, redirect_url, language, display, meta_robots,
+                                   category,
                                    show_in_menu, site_icon, page_id))
 
                 messages.append("Pomyslnie zapisano zmiany!")

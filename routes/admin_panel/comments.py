@@ -1,11 +1,8 @@
 import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
 
-from definitions.static import SECRET_KEY
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import SECRET_KEY, templates
 
 
 async def admin_delete_comment(request: Request):

@@ -1,11 +1,9 @@
 from itertools import islice
 
 from starlette.requests import Request
-from starlette.templating import Jinja2Templates
 
 from utils.text_utils import sanitize_text
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import templates
 
 
 async def index_page(request: Request):

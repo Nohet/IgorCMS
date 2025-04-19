@@ -3,11 +3,8 @@ import os
 import jwt
 
 from starlette.requests import Request
-from starlette.templating import Jinja2Templates
 
-from definitions.static import SECRET_KEY, API_UPLOAD_KEY
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import SECRET_KEY, API_UPLOAD_KEY, templates
 
 
 async def admin_image_gallery(request: Request):
@@ -19,9 +16,9 @@ async def admin_image_gallery(request: Request):
     images = os.listdir(image_storage_path)
 
     return templates.TemplateResponse("admin/image_gallery/image_gallery.html",
-                                              {"request": request,
-                                               "images": images,
-                                               "API_UPLOAD_KEY": API_UPLOAD_KEY,
-                                               "firstname": token.get("firstname"),
-                                               "lastname": token.get("lastname"),
-                                               "permissions": token.get("permissions")})
+                                      {"request": request,
+                                       "images": images,
+                                       "API_UPLOAD_KEY": API_UPLOAD_KEY,
+                                       "firstname": token.get("firstname"),
+                                       "lastname": token.get("lastname"),
+                                       "permissions": token.get("permissions")})

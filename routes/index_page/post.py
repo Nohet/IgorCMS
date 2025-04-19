@@ -1,8 +1,6 @@
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import templates
 
 
 async def post_page(request: Request):

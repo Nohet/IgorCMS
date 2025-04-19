@@ -1,12 +1,9 @@
 import jwt
 
 from starlette.requests import Request
-from starlette.templating import Jinja2Templates
 
-from definitions.static import SECRET_KEY
+from definitions.static import SECRET_KEY, templates
 from utils.text_utils import sanitize_text
-
-templates = Jinja2Templates(directory='templates')
 
 
 async def admin_homepage(request: Request):

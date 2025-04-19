@@ -2,11 +2,9 @@ import bcrypt
 
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
 
 from utils.jwt_tokens import create_access_token
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import templates
 
 
 async def logout(_: Request):

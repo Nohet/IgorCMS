@@ -6,11 +6,10 @@ from pathlib import Path
 
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
 
 from utils.tables import create_tables
+from definitions.static import templates
 
-templates = Jinja2Templates(directory='templates')
 base_dir = Path(__file__).resolve().parent.parent
 config_path = base_dir / 'config.json'
 
@@ -84,8 +83,7 @@ async def setup_database(request: Request):
                 async with conn.cursor() as cursor:
                     await create_tables(cursor)
 
-
-        except:
+        except Exception:
             return templates.TemplateResponse("setup/setup.html", {"request": request, "message": [
                 "Połączenie z bazą się nie powiodło, upewnij się, że wprowadzasz poprawne dane!"]})
 

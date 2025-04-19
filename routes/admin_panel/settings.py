@@ -2,13 +2,10 @@ import urllib.parse
 
 import bcrypt
 import jwt
+
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from starlette.templating import Jinja2Templates
-
-from definitions.static import SECRET_KEY, API_UPLOAD_KEY
-
-templates = Jinja2Templates(directory='templates')
+from definitions.static import SECRET_KEY, API_UPLOAD_KEY, templates
 
 
 async def admin_settings(request: Request):

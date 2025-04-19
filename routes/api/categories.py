@@ -3,7 +3,7 @@ from utils.responses import response_message
 
 
 async def api_list_categories(request: Request):
-    """Pobiera wszystkie kategorie."""
+    """Retrieves all categories."""
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT * FROM categories")
@@ -15,7 +15,7 @@ async def api_list_categories(request: Request):
 
 
 async def api_create_category(request: Request):
-    """Tworzy nową kategorię."""
+    """Creates new category."""
     data = await request.json()
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -34,7 +34,7 @@ async def api_create_category(request: Request):
 
 
 async def api_update_category(request: Request):
-    """Aktualizuje istniejącą kategorię."""
+    """Updates existing category."""
     data = await request.json()
     category_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:

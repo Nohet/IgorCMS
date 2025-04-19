@@ -19,7 +19,7 @@
     {% include 'navbar.html' %}
     <div id="content">
         <form method="post" action="">
-            <h3>Dodawanie nowego użytkownika</h3>
+            <h3>Adding a New User</h3>
             {% for message in messages %}
             <div id="message">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -32,26 +32,25 @@
             </div>
             {% endfor %}
 
-
-            <p>Imie *</p>
+            <p>First Name *</p>
             <input type="text" name="firstname" id="firstname" required>
 
-            <p>Nazwisko *</p>
+            <p>Last Name *</p>
             <input type="text" name="lastname" id="lastname" required>
 
-            <p>Adres e-mail *</p>
+            <p>Email Address *</p>
             <input type="email" name="email" id="email" required>
 
-            <p>Hasło *</p>
+            <p>Password *</p>
             <input type="password" name="pass" id="pass" required>
 
-            <p>Uprawnienia</p>
+            <p>Permissions</p>
             <select name="permissions">
                 <option value="3">Administrator</option>
-                <option value="2">Autor</option>
+                <option value="2">Author</option>
             </select><br>
 
-            <input id="submitButton" type="submit" value="Dodaj użytkownika">
+            <input id="submitButton" type="submit" value="Add User">
         </form>
     </div>
 </div>

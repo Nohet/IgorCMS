@@ -18,7 +18,7 @@
         <div id="content">
             <aside id="aside1">
                 <div id="stats">
-                    <p>Statystyki</p>
+                    <p>Statistics</p>
                     <hr>
                     <a href="/admin/posts/view"><svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -26,32 +26,32 @@
                             <path fill-rule="evenodd"
                                 d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
                                 clip-rule="evenodd" />
-                        </svg>{{ post_count }} Postów</a><br>
+                        </svg>{{ post_count }} Posts</a><br>
                     <a href="/admin/pages/view"><svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                                 d="M5 7h14M5 12h14M5 17h14" />
-                        </svg>{{ pages_count }} Stron(y)</a><br>
+                        </svg>{{ pages_count }} Page(s)</a><br>
                     <a href="/admin/comments/view"><svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
                                 d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm2 8v-2h7v2H4Zm0 2v2h7v-2H4Zm9 2h7v-2h-7v2Zm7-4v-2h-7v2h7Z"
                                 clip-rule="evenodd" />
-                        </svg>{{ comments_count }} Komentarzy</a><br>
+                        </svg>{{ comments_count }} Comments</a><br>
 
                 </div>
                 <div id="activity">
-                    <p class="firstp">Aktywność</p>
+                    <p class="firstp">Activity</p>
                     <hr>
-                    <p>Ostatnio opublikowane</p>
+                    <p>Recently Published</p>
                     {% if last_post.exists %}
                     <p class="greyp">{{ last_post.date }} - <a href="/admin/posts/view">{{ last_post.title }}</a></p>
                     {% else %}
-                    <p class="greyp">Brak</p>
+                    <p class="greyp">None</p>
                     {% endif %}
                     <hr>
-                    <p>Najnowsze komentarze</p>
+                    <p>Latest Comments</p>
                     <hr>
                     <div>
                         {% if last_comment.exists %}
@@ -60,29 +60,24 @@
                         </p>
                         <p>{{ last_comment.content }}</p>
                         {% else %}
-                        <p>Brak</p>
+                        <p>None</p>
                         {% endif %}
                     </div>
                     <hr>
-
-
-
                 </div>
             </aside>
             <aside id="aside2">
 
                 <div id="draft">
-                    <p class="firstp">Szybki szkic</p>
+                    <p class="firstp">Quick Draft</p>
                     <hr>
                     <form method="post" action="">
-                        <input type="text" placeholder="Tytuł" name="title" id="title" required><br>
-                        <textarea name="content" id="post_content" placeholder="Co ci chodzi po głowie?" required></textarea><br>
-                        <input type="submit" value="Zapisz szkic">
+                        <input type="text" placeholder="Title" name="title" id="title" required><br>
+                        <textarea name="content" id="post_content" placeholder="What's on your mind?" required></textarea><br>
+                        <input type="submit" value="Save Draft">
                     </form>
                 </div>
             </aside>
-
-
         </div>
     </div>
 </body>

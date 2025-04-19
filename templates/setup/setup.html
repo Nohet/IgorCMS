@@ -12,7 +12,7 @@
 <body>
 <div id="main">
     <form method="post" action="">
-        <h3>Skonfiguruj baze danych</h3>
+        <h3>Configure Database</h3>
         {% for msg in message %}
         <div id="message">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -24,17 +24,17 @@
         </div>
         {% endfor %}
 
-        <p>Adres hosta:</p>
+        <p>Host Address:</p>
         <input required name="hostname" id="hostname" type="text" placeholder="127.0.0.1">
         <p>Port:</p>
         <input required name="port" id="port" type="number" placeholder="3306">
-        <p>Nazwa bazy danych:</p>
+        <p>Database Name:</p>
         <input required name="dbname" id="dbname" type="text" placeholder="cms">
-        <p>Nazwa użytkownika:</p>
+        <p>Username:</p>
         <input required name="username" id="username" type="text" placeholder="root">
-        <p>Hasło do bazy danych:</p>
+        <p>Database Password:</p>
         <input name="dbpass" id="dbpass" type="password" placeholder="********">
-        <input id="submitButton" type="submit" value="Kontynuuj"/>
+        <input id="submitButton" type="submit" value="Continue"/>
     </form>
 </div>
 </body>

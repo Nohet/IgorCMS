@@ -69,7 +69,7 @@ async def create_tables(cursor: aiomysql.Cursor):
           `title` varchar(150) NOT NULL,
           `content` text NOT NULL,
           `excerpt` text DEFAULT NULL,
-          `author_id` int(11) NOT NULL,
+          `author_id` int(11) DEFAULT NULL,
           `editor_id` int(11) DEFAULT NULL,
           `created_at` datetime NOT NULL DEFAULT current_timestamp(),
           `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -108,12 +108,12 @@ async def create_tables(cursor: aiomysql.Cursor):
         """
         ALTER TABLE `pages`
         ADD CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-        ADD CONSTRAINT `pages_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+        ADD CONSTRAINT `pages_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
         """,
         """
         ALTER TABLE `posts`
-        ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-        ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`editor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+        ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`editor_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
         ADD CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
         """
     ]
@@ -124,8 +124,9 @@ async def create_tables(cursor: aiomysql.Cursor):
 
         await cursor.execute("""
         INSERT INTO pages (slug, image, title, content, display, author_id, navbar_title, meta_title, meta_description, meta_keywords, meta_robots, language, redirect_url, parent_id, show_in_menu, category_id)
-        VALUES (NULL, NULL, "Strona główna", NULL, "center", NULL, "Nazwa strony", "Strona główna", "To jest strona główna, na której znajdują się artykuły.", "tutaj, podaj, slowa, kluczowe", "index, follow", "en", NULL, NULL, 0, NULL);
+        VALUES (NULL, NULL, "Homepage", NULL, "center", NULL, "Page Name", "Homepage", "This is the homepage, where articles are located.", "here, provide, keywords", "index, follow", "en", NULL, NULL, 0, NULL);
         """)
+
     except Exception as e:
         await cursor.connection.rollback()
         raise e

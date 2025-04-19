@@ -65,7 +65,7 @@ async def admin_users_add(request: Request):
                     (first_name, last_name, email,
                      bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
                      int(permissions)))
-                messages.append("Pomyślnie dodano nowego użytkownika!")
+                messages.append("Successfully added a new user!")
 
     return templates.TemplateResponse("admin/users/add/admin_add_user.html", {"request": request,
                                                                               "messages": messages,

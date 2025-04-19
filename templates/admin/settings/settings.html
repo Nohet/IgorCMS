@@ -19,7 +19,7 @@
         {% if permissions == 3 %}
         <aside id="aside1">
             <div id="general_settings">
-                <p>Ustawienia ogólne</p>
+                <p>General Settings</p>
                 <hr>
                 <form method="post" action="">
                     {% for message in messages %}
@@ -35,21 +35,21 @@
                     </div>
                     {% endfor %}
                     <input name="form_type" value="general_settings" style="display: none;"/>
-                    <p>Nazwa strony</p>
+                    <p>Site Name</p>
                     <input value="{{ index_page[0] }}" type="text" name="site_name" id="site_name">
-                    <p>Logo strony</p>
+                    <p>Site Logo</p>
                     <input type="file"
                            accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="image">
                     <input style="display: none;" value="{{ index_page[1]|safe }}" type="text" name="site_icon"
                            accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="site_icon"><br>
-                    <p>Tytuł meta</p>
+                    <p>Meta Title</p>
                     <input value="{{ index_page[2] }}" type="text" name="meta_title" id="meta_title">
-                    <p>Opis meta</p>
+                    <p>Meta Description</p>
                     <input value="{{ index_page[3] }}" type="text" name="meta_desc" id="meta_desc">
-                    <p>Meta słowa kluczowe</p>
-                    <input value="{{ index_page[4] }}" type="text" placeholder="sport, pływanie" name="meta_keywords"
+                    <p>Meta Keywords</p>
+                    <input value="{{ index_page[4] }}" type="text" placeholder="sport, swimming" name="meta_keywords"
                            id="meta_keywords">
-                    <p>Meta robots</p>
+                    <p>Meta Robots</p>
                     <select name="meta_robots">
                         <option value="index, follow">index, follow</option>
                         <option value="noindex, follow">noindex, follow</option>
@@ -57,9 +57,9 @@
                         <option value="noindex, nofollow">noindex, nofollow</option>
                     </select>
 
-                    <p>Język strony</p>
+                    <p>Site Language</p>
                     <input value="{{ index_page[5] }}" type="text" name="site_language" id="site_language"><br>
-                    <input type="submit" value="Zaktualizuj ustawienia">
+                    <input type="submit" value="Update Settings">
 
                 </form>
 
@@ -70,24 +70,23 @@
         <aside id="aside2">
 
             <div id="passchange">
-                <p class="firstp">Zmień hasło</p>
+                <p class="firstp">Change Password</p>
                 <hr>
                 <form method="post" action="">
                     <input name="form_type" value="password_settings" style="display: none;"/>
-                    <p>Stare hasło *</p>
+                    <p>Old Password *</p>
                     <input type="password" name="old_pass" id="old_pass" required>
-                    <p>Nowe hasło *</p>
+                    <p>New Password *</p>
                     <input type="password" name="new_pass" id="new_pass" required>
 
-                    <input type="submit" value="Zmień hasło">
+                    <input type="submit" value="Change Password">
                 </form>
                 <hr>
 
             </div>
             <div id="api_keys">
-                <p class="firstp">Klucze API</p>
-                <button onclick="location.href = '/admin/settings/generate-api-key'" id="generateApiKey">Generuj klucz
-                    api
+                <p class="firstp">API Keys</p>
+                <button onclick="location.href = '/admin/settings/generate-api-key'" id="generateApiKey">Generate API Key
                 </button>
                 <hr>
                 <ul>

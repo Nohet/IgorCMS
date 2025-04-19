@@ -23,7 +23,7 @@ async def admin_edit_category(request: Request):
                 await cursor.execute("""UPDATE categories SET name=%s, description=%s, parent_id=%s, 
                 updated_at=CURRENT_TIMESTAMP() WHERE id = %s""",
                                      (name, description, parent_id, category_id))
-                messages.append("Pomyślnie zapisano zmiany!")
+                messages.append("Successfully saved changes!")
 
             await cursor.execute("SELECT id, name FROM `categories`")
             categories = await cursor.fetchall()
@@ -68,7 +68,7 @@ async def admin_add_category(request: Request):
 
                 await cursor.execute("INSERT INTO categories(name, description, parent_id) VALUES (%s, %s, %s)",
                                      (name, description, parent_id))
-                messages.append("Pomyślnie dodano nową kategorię!")
+                messages.append("Successfully added a new category!")
 
             await cursor.execute("SELECT id, name FROM `categories`")
             categories = await cursor.fetchall()

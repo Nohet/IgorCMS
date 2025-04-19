@@ -5,7 +5,7 @@ from utils.text_utils import sanitize_text
 
 
 async def api_get_posts(request: Request):
-    """Wyświetla listę postów."""
+    """Retrieves all posts."""
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
             sql = "SELECT * FROM posts"
@@ -15,7 +15,7 @@ async def api_get_posts(request: Request):
 
 
 async def api_create_post(request: Request):
-    """Tworzy nowy post."""
+    """Creates a new post."""
     data = await request.json()
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -45,7 +45,7 @@ async def api_create_post(request: Request):
 
 
 async def api_update_post(request: Request):
-    """Aktualizuje istniejący post."""
+    """Updates existing post."""
     data = await request.json()
     post_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:
@@ -77,7 +77,7 @@ async def api_update_post(request: Request):
 
 
 async def api_delete_post(request: Request):
-    """Usuwa post na podstawie ID."""
+    """Deletes a post based on ID."""
     post_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:

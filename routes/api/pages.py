@@ -5,7 +5,7 @@ from utils.text_utils import sanitize_text
 
 
 async def api_get_pages(request: Request):
-    """Wyświetla listę stron."""
+    """Retrieves all pages."""
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
             sql = "SELECT * FROM pages"
@@ -15,7 +15,7 @@ async def api_get_pages(request: Request):
 
 
 async def api_create_page(request: Request):
-    """Tworzy nową stronę."""
+    """Creates a new page."""
     data = await request.json()
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -49,7 +49,7 @@ async def api_create_page(request: Request):
 
 
 async def api_update_page(request: Request):
-    """Aktualizuje istniejącą stronę."""
+    """Updates existing page."""
     data = await request.json()
     page_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:
@@ -85,7 +85,7 @@ async def api_update_page(request: Request):
 
 
 async def api_delete_page(request: Request):
-    """Usuwa stronę na podstawie ID."""
+    """Deletes a page based on ID."""
     page_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:

@@ -48,11 +48,11 @@ async def admin_login(request: Request):
 
             else:
                 return templates.TemplateResponse("admin/login.html", {"request": request, "message": [
-                    "Hasło lub adres e-mail są nieprawidłowe!"]})
+                    "Password or email is invalid!"]})
 
         except Exception as e:
             print(e)
             return templates.TemplateResponse("admin/login.html", {"request": request, "message": [
-                "Coś poszło nie tak, możliwe, że takiego adresu e-mail nie ma w bazie danych."]})
+                "Something went wrong! Maybe this email address does not exist in the database."]})
 
     return templates.TemplateResponse(request, "admin/login.html")

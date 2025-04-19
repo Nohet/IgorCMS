@@ -4,7 +4,7 @@ IgorCMS is a CMS (Content Management System) written in Python using the Starlet
 ---
 
 ## Screenshot
-![Screenshot showing the admin panel](https://i.imgur.com/wHLl7FK.png)
+![Screenshot showing the admin panel](https://i.imgur.com/RVUjRb1.png)
 
 ---
 

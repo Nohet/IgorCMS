@@ -31,23 +31,23 @@
                 <p>{{ message }}</p>
             </div>
             {% endfor %}
-            <h3>Edytowanie kategorii</h3>
+            <h3>Editing category</h3>
 
-            <p>Nazwa *</p>
+            <p>Name *</p>
             <input type="text" value="{{ data[0] }}" name="name" id="name" required>
 
-            <p>Opis</p>
+            <p>Description</p>
             <input type="text" value="{{ data[1] }}" name="description" id="description">
 
-            <p>Kategoria nadrzędna</p>
+            <p>Parent category</p>
             <select name="parent_id">
-                <option value="None">Brak</option>
+                <option value="None">None</option>
                 {% for category in categories %}
                 <option value="{{ category[0] }}">{{ category[1] }}</option>
                 {% endfor %}
             </select><br>
 
-            <input id="submitButton" type="submit" value="Zapisz zmiany">
+            <input id="submitButton" type="submit" value="Save changes">
         </form>
     </div>
 </div>

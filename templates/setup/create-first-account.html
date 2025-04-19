@@ -12,7 +12,7 @@
 <body>
 <div id="main">
     <form method="post" action="">
-        <h3>Dodaj pierwsze konto do CMSA</h3>
+        <h3>Add the first account to the CMS</h3>
         {% for msg in message %}
         <div id="message">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -23,15 +23,15 @@
             <p>{{ msg }}</p>
         </div>
         {% endfor %}
-        <p>Imie:</p>
-        <input required name="firstname" id="firstname" type="text" placeholder="Jan">
-        <p>Nazwisko:</p>
-        <input required name="lastname" id="lastname" type="text" placeholder="Kowalski">
-        <p>E-mail:</p>
+        <p>First Name:</p>
+        <input required name="firstname" id="firstname" type="text" placeholder="John">
+        <p>Last Name:</p>
+        <input required name="lastname" id="lastname" type="text" placeholder="Doe">
+        <p>Email:</p>
         <input required name="email" id="email" type="email" placeholder="example@example.com">
-        <p>Hasło:</p>
+        <p>Password:</p>
         <input required name="pass" id="pass" type="password" placeholder="******">
-        <input id="submitButton" type="submit" value="Utwórz"/>
+        <input id="submitButton" type="submit" value="Create"/>
     </form>
 </div>
 </body>

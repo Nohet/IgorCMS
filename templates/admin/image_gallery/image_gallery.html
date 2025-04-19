@@ -18,13 +18,13 @@
         {% include 'navbar.html' %}
         <div id="content">
             <main>
-                <p id="uploadPhotoText">Prześlij zdjęcie:</p>
+                <p id="uploadPhotoText">Upload photo:</p>
                 <input type="file" id="new_image" name="new_image">
 
                 <div class="gallery">
                     {% for image in images%}
                     <div onclick="window.open('/static/image_storage/{{ image }}', '_blank');" class="gallery-item">
-                        <img src="/static/image_storage/{{ image }}" alt="Zdjęcie 1">
+                        <img src="/static/image_storage/{{ image }}" alt="Image 1">
                         <div class="image-caption">{{ image }}</div>
                     </div>
                     {% endfor %}

@@ -34,7 +34,7 @@ async def admin_edit_post(request: Request):
                 """, (title, sanitize_text(title), post_content, excerpt, tags, featured_image,
                       comments_enabled,
                       category, status, token.get("user_id"), post_id))
-                messages.append("Pomyślnie zapisano zmiany!")
+                messages.append("Successfully saved changes!")
 
             await cursor.execute("SELECT title, content, excerpt, tags, featured_image FROM `posts` WHERE id = %s",
                                  (post_id,))
@@ -116,7 +116,7 @@ async def admin_add_post(request: Request):
                     sanitize_text(title), title, content, excerpt, token.get("user_id"), status, tags,
                     featured_image,
                     comments_enabled, category_id))
-                messages.append("Pomyślnie dodano nowy post!")
+                messages.append("Successfully added a new post!")
 
             await cursor.execute("SELECT id, name FROM `categories`")
             categories = await cursor.fetchall()

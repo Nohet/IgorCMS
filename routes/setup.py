@@ -45,7 +45,7 @@ async def setup_add_first_account(request: Request):
 
                 except:
                     return templates.TemplateResponse("setup/create-first-account.html", {"request": request, "message":
-                        ["Coś poszło nie tak! Upewnij się, że uzupełniłeś wszystkie pola poprawnie."]})
+                        ["Something went wrong! Make sure you've filled in all the fields correctly."]})
 
     return templates.TemplateResponse(request, "setup/create-first-account.html")
 
@@ -83,9 +83,10 @@ async def setup_database(request: Request):
                 async with conn.cursor() as cursor:
                     await create_tables(cursor)
 
-        except Exception:
+        except Exception as e:
+            print(e)
             return templates.TemplateResponse("setup/setup.html", {"request": request, "message": [
-                "Połączenie z bazą się nie powiodło, upewnij się, że wprowadzasz poprawne dane!"]})
+                "The connection to the database failed, make sure you are entering the correct data!"]})
 
         json_conf["database"]["host"] = hostname
         json_conf["database"]["dbname"] = dbname

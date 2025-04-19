@@ -34,33 +34,33 @@
                 <p>{{ message }}</p>
             </div>
             {% endfor %}
-            <p>Tytuł *</p>
+            <p>Title *</p>
             <input type="text" name="title" id="title" required>
 
-            <p>Treść *</p>
+            <p>Content *</p>
             <textarea name="post_content" id="post_content" required style="display:none;"></textarea>
 
             <div id="texteditor" style="height: 300px;"></div>
 
-            <p>Krótki opis</p>
+            <p>Short Description</p>
             <input type="text" name="excerpt" id="excerpt">
 
-            <p>Tagi</p>
+            <p>Tags</p>
             <input type="text" name="tags" id="tags">
 
-            <p>Obrazek Wyróżniony</p>
+            <p>Featured Image</p>
             <input type="file" name="featured_image"
                    accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="featured_image"><br>
 
-            <p>Komentarze włączone</p>
+            <p>Enable Comments</p>
             <select name="comments_enabled">
-                <option value="1">Tak</option>
-                <option value="0">Nie</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
             </select><br>
 
-            <p>Kategoria</p>
+            <p>Category</p>
             <select name="category">
-                <option value="None">Bez kategorii</option>
+                <option value="None">No category</option>
                 {% for category in categories %}
                 <option value="{{ category[0] }}">{{ category[1] }}</option>
                 {% endfor %}
@@ -68,11 +68,11 @@
 
             <p>Status</p>
             <select name="status">
-                <option value="published">Publikacja</option>
-                <option value="draft">Szkic</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
             </select><br>
 
-            <input id="submitButton" type="submit" value="Utwórz post">
+            <input id="submitButton" type="submit" value="Create Post">
         </form>
     </div>
 </div>
@@ -141,7 +141,7 @@
                             .then(response => response.json())
                             .then(result => {
                                 if (result.path) {
-                                    resolve(result.path); // Zakładamy, że API zwraca URL przesłanego obrazka
+                                    resolve(result.path); // Assuming the API returns the image URL
                                 } else {
                                     reject('Invalid response from server');
                                 }

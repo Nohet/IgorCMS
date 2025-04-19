@@ -40,7 +40,7 @@ async def admin_edit_page(request: Request):
                                    category,
                                    show_in_menu, site_icon, page_id))
 
-                messages.append("Pomyslnie zapisano zmiany!")
+                messages.append("Successfully saved changes!")
 
             await cursor.execute("SELECT id, name FROM `categories`")
             categories = await cursor.fetchall()
@@ -130,7 +130,7 @@ async def admin_add_page(request: Request):
                                       token.get("user_id"),
                                       navbar_title, meta_title, meta_description, meta_keywords, meta_robots, language,
                                       redirect_url, show_in_menu, category))
-                messages.append("Pomyślnie dodano nową stronę!")
+                messages.append("Successfully added a new page!")
 
             await cursor.execute("SELECT id, name FROM `categories`")
             categories = await cursor.fetchall()

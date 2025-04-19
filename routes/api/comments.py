@@ -4,7 +4,7 @@ from utils.responses import response_message
 
 
 async def api_list_comments(request: Request):
-    """Pobiera wszystkie komentarze."""
+    """Retrieves all comments."""
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT * FROM comments")
@@ -17,7 +17,7 @@ async def api_list_comments(request: Request):
 
 
 async def api_delete_comment(request: Request):
-    """Usuwa komentarz na podstawie ID."""
+    """Deletes comment based on ID."""
     comment_id = request.path_params["id"]
     async with request.app.state.db_pool.acquire() as conn:
         async with conn.cursor() as cursor:

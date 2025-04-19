@@ -20,8 +20,8 @@
         <main>
             <div class="plugins">
                 {% if plugins|length == 0 %}
-                <p id="noPluginsText">Brak zainstalowanych wtyczek!
-                    Aby zainstalować wtyczkę umieść ją w folderze <b>/plugins/</b></p>
+                <p id="noPluginsText">No plugins installed!
+                    To install a plugin, place it in the <b>/plugins/</b> folder</p>
                 {% endif %}
 
                 {% for plugin in plugins %}

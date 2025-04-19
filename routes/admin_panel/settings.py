@@ -33,7 +33,7 @@ async def admin_settings(request: Request):
                 updated_at = CURRENT_TIMESTAMP() WHERE id = 1;""", (site_name, site_icon, meta_title, meta_desc,
                                                                     meta_keywords, meta_robots, site_language))
 
-                messages.append("Pomyślnie zapisano zmiany!")
+                messages.append("Successfully saved changes!")
 
             elif form_data.get("form_type") == "password_settings":
                 old_pass = form_data.get("old_pass")

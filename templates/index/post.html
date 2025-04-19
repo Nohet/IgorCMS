@@ -33,13 +33,13 @@
 </nav>
 <div class="container">
     {% if post[6] %}
-    <img src="/static/image_storage/{{ post[6] }}" alt="Zdjecie przedstawiające nawiązanie do treści posta"
+    <img src="/static/image_storage/{{ post[6] }}" alt="Image representing the content of the post"
          class="hero-image">
     {% endif %}
     <div class="breadcrumb">
         <a href="/">Home</a> >
         {% if not post[0] %}
-                <a href="/">Bez kategorii</a> >
+                <a href="/">Uncategorized</a> >
         {% else %}
         <a href="/">{{ post[0] }}</a> >
         {% endif %}
@@ -57,7 +57,7 @@
         {{ post[5]|safe }}
     </div>
     <div class="comments-section">
-        <div onclick="handleShow()" class="comments-toggle">POKAŻ KOMENTARZE ({{comments|length}}) v</div>
+        <div onclick="handleShow()" class="comments-toggle">SHOW COMMENTS ({{comments|length}}) v</div>
 
         <div class="comment-form">
             {% for comment in comments %}
@@ -70,27 +70,27 @@
             </div>
             {% endfor %}
 
-            <h2>Dodaj komentarz</h2>
-            <p class="form-disclaimer">Twój adres e-mail nie zostanie opublikowany. Wymagane pola są oznaczone *</p>
+            <h2>Add a comment</h2>
+            <p class="form-disclaimer">Your email address will not be published. Required fields are marked with *</p>
 
             <form action="" method="post">
                 <div class="form-group">
-                    <label>Nazwa <span class="required">*</span></label>
+                    <label>Name <span class="required">*</span></label>
                     <input type="text" name="author" required>
                 </div>
 
                 <div class="form-group">
-                    <label>E-mail <span class="required">*</span></label>
+                    <label>Email <span class="required">*</span></label>
                     <input type="email" name="email" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Komentarz <span class="required">*</span></label>
+                    <label>Comment <span class="required">*</span></label>
                     <textarea name="content" required></textarea>
                 </div>
 
 
-                <button type="submit" class="submit-button">WYŚLIJ</button>
+                <button type="submit" class="submit-button">SUBMIT</button>
             </form>
         </div>
 

@@ -35,41 +35,41 @@
                 <p>{{ message }}</p>
             </div>
             {% endfor %}
-            <p>Tytuł *</p>
+            <p>Title *</p>
             <input type="text" name="title" id="title" required>
 
-            <p>Treść</p>
+            <p>Content</p>
             <textarea name="page_content" id="page_content" style="display:none;"></textarea>
 
             <div id="texteditor" style="height: 300px;"></div>
 
-            <p>Nazwa na pasku górnym</p>
+            <p>Navigation Title</p>
             <input type="text" name="navbar_title" id="navbar_title">
 
-            <p>Meta tytuł</p>
+            <p>Meta Title</p>
             <input type="text" name="meta_title" id="meta_title">
 
-            <p>Meta opis</p>
+            <p>Meta Description</p>
             <input type="text" name="meta_description" id="meta_description">
 
-            <p>Meta słowa kluczowe</p>
+            <p>Meta Keywords</p>
             <input type="text" name="meta_keywords" id="meta_keywords">
 
-            <p>Adres przekierowania URL</p>
+            <p>Redirect URL</p>
             <input type="text" name="redirect_url" id="redirect_url">
 
-            <p>Język strony</p>
+            <p>Page Language</p>
             <input type="text" name="language" id="language" value="en">
 
 
-            <p>Pozycja na pasku górnym</p>
+            <p>Position on the Top Bar</p>
             <select name="display">
-                <option value="center">Środek</option>
-                <option value="right">Prawo</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
             </select>
 
 
-            <p>Meta roboty</p>
+            <p>Meta Robots</p>
             <select name="meta_robots">
                 <option value="index, follow">index, follow</option>
                 <option value="noindex, follow">noindex, follow</option>
@@ -78,27 +78,27 @@
             </select>
 
 
-            <p>Kategoria</p>
+            <p>Category</p>
             <select name="category">
-                <option value="None">Bez kategorii</option>
+                <option value="None">No category</option>
                 {% for category in categories %}
                 <option value="{{ category[0] }}">{{ category[1] }}</option>
                 {% endfor %}
             </select><br>
 
 
-            <p>Pokazywać na pasku górnym?</p>
+            <p>Show in the Menu?</p>
             <select name="show_in_menu">
-                <option value="1">Tak</option>
-                <option value="0">Nie</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
             </select><br>
 
-            <p>Ikona strony</p>
+            <p>Page Icon</p>
             <input type="file" name="icon"
                    accept="image/jpeg, image/png, image/gif, image/bmp, image/webp" id="icon"><br>
 
 
-            <input id="submitButton" type="submit" value="Utwórz stronę">
+            <input id="submitButton" type="submit" value="Create Page">
         </form>
     </div>
 </div>

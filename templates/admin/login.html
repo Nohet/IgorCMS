@@ -13,7 +13,7 @@
 <body>
 <div id="main">
     <form method="post" action="">
-        <h3>Zaloguj się do panelu administracyjnego.</h3>
+        <h3>Log in to the admin panel.</h3>
         {% if message %}
         {% for msg in message %}
         <div id="message">
@@ -27,11 +27,11 @@
         </div>
         {% endfor %}
         {% endif %}
-        <p>E-mail:</p>
+        <p>Email:</p>
         <input required name="email" id="email" type="email" placeholder="example@example.com">
-        <p>Hasło:</p>
+        <p>Password:</p>
         <input required name="pass" id="pass" type="password" placeholder="******">
-        <input id="submitButton" type="submit" value="Zaloguj się"/>
+        <input id="submitButton" type="submit" value="Log in"/>
     </form>
 </div>
 </body>

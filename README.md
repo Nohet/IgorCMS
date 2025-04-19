@@ -1,57 +1,53 @@
-## Co to jest?
-IgorCMS to CMS(System Zarządzania Treścią) napisany w pythonie używając
-framework'a Starlette i bazy danych MySQL/MariaDB.
-
-Kod nie jest najlepiej napisany, ale będzie sumiennie poprawiany.
+## What is it?
+IgorCMS is a CMS (Content Management System) written in Python using the Starlette framework and a MySQL/MariaDB database.
 
 ---
 
 ## Screenshot
-![Screenshot przedstawiający panel administracyjny](https://i.imgur.com/wHLl7FK.png)
+![Screenshot showing the admin panel](https://i.imgur.com/wHLl7FK.png)
 
 ---
 
+## How to run my CMS?
+Recommended Python version: <3.10
 
-## Jak uruchomić mojego CMS-a?
-Zalecana wersja Pythona: <3.10
-
-1. Zainstalować wymagane biblioteki:
+1. Install the required libraries:
     - `pip install -r requirements.txt`
 
-2. Uruchomić bazę danych (MySQL/MariaDB).
+2. Run the database (MySQL/MariaDB).
 
-3. Stworzyć pustą bazę danych, która zostanie wykorzystana przez CMS-a.
-   Jej nazwę należy podać podczas pierwszej konfiguracji.
+3. Create an empty database that will be used by the CMS.
+   The name of the database should be provided during the first setup.
 
-4. Włączyć CMS-a. CMS domyślnie działa w trybie debugowania. Aby go wyłączyć, zmień wartość `debug=True` na `debug=False` w pliku `app.py`:
-    - `uvicorn app:app` lub `python -m uvicorn app:app`
+4. Start the CMS. By default, the CMS runs in debug mode. To disable it, change `debug=True` to `debug=False` in the `app.py` file:
+    - `uvicorn app:app` or `python -m uvicorn app:app`
 
-5. Otworzyć przeglądarkę i przejść na stronę CMS-a.
-   Jeśli CMS nie jest skonfigurowany, pojawi się formularz umożliwiający przeprowadzenie konfiguracji i utworzenie pierwszego konta.
+5. Open your browser and go to the CMS website.
+   If the CMS is not configured, a form will appear allowing you to perform the setup and create the first user account.
 
 ---
 
-## Funkcje mojego CMS-a:
-- Tworzenie, edytowanie, usuwanie stron.
-- Tworzenie, edytowanie, usuwanie kategorii.
-- Tworzenie, edytowanie, usuwanie postów.
-- Dodawanie komentarzy do postów.
-- Edytor WYSIWYG (What You See Is What You Get):
-  - Obsługa formatowania tekstu (nagłówki, listy, cytaty itp.).
-  - Możliwość podglądu wersji roboczej przed publikacją.
-- Rejestracja i logowanie użytkowników.
-- System ról i uprawnień (np. autor, administrator).
-- Zmienianie haseł.
-- Przechowywanie i organizowanie plików (obrazy, wideo, dokumenty).
-- Zarządzanie meta tagami (tytuł, opis, słowa kluczowe).
-- Przyjazne dla wyszukiwarek adresy URL (SEO-friendly URLs).
-- Automatyczne generowanie mapy strony (`sitemap.xml`).
-- Bezpieczeństwo:
-  - Autoryzacja przez JWT.
-  - Ochrona przed atakami XSS i CSRF.
-  - Hashowanie haseł użytkowników (bcrypt).
-- Obsługa wtyczek.
-- API umożliwiające korzystanie z CMS-a w trybie headless (bez panelu graficznego).
-- Asynchroniczna obsługa zapytań.
+## Features of my CMS:
+- Create, edit, and delete pages.
+- Create, edit, and delete categories.
+- Create, edit, and delete posts.
+- Add comments to posts.
+- WYSIWYG (What You See Is What You Get) editor:
+  - Supports text formatting (headings, lists, quotes, etc.).
+  - Preview the draft before publishing.
+- User registration and login.
+- Role and permission system (e.g., author, administrator).
+- Change passwords.
+- File storage and organization (images, videos, documents).
+- Manage meta tags (title, description, keywords).
+- SEO-friendly URLs.
+- Automatic generation of sitemap (`sitemap.xml`).
+- Security:
+  - Authentication via JWT.
+  - Protection against XSS and CSRF attacks.
+  - Password hashing with bcrypt.
+- Plugin support.
+- API for headless CMS (without the graphical panel).
+- Asynchronous query handling.
 
 ---

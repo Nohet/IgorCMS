@@ -35,6 +35,7 @@ from routes.index_page.post import post_page
 from routes.robots import robots_txt
 from routes.setup import setup_database, setup_add_first_account
 from routes.sitemap import sitemap
+from utils.config import Config
 
 routes = [
     Mount('/static', app=StaticFiles(directory='static'), name="static"),
@@ -76,7 +77,6 @@ routes = [
     Route("/admin/settings/generate-api-key", admin_generate_api_key, methods=["GET"]),
     Route("/admin/settings/delete-api-key", admin_delete_api_key, methods=["GET"]),
 
-
     Route("/api/upload-file", api_save_image_from_data_uri, methods=["POST"]),
     Route("/api/v1/categories", api_list_categories, methods=["GET"]),
     Route("/api/v1/categories", api_create_category, methods=["POST"]),
@@ -104,10 +104,14 @@ routes = [
 
 ]
 app = Starlette(debug=True, routes=[])
+config = Config()
 
 
 @app.on_event("startup")
 async def startup():
+    if not config.exists():
+        config.copy_config()
+
     pm = PluginManager(app, routes)
     await pm.load_plugins()
 

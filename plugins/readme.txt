@@ -1,1 +1,0 @@
-This is a plugins directory. To enable the plugin, put the files here and restart the webserver.

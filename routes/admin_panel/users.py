@@ -5,7 +5,7 @@ import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from definitions.static import SECRET_KEY, templates
+from constants.static import SECRET_KEY, templates
 
 
 async def admin_delete_user(request: Request):

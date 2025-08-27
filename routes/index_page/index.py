@@ -3,7 +3,7 @@ from itertools import islice
 from starlette.requests import Request
 
 from utils.text_utils import sanitize_text
-from definitions.static import templates
+from constants.static import templates
 
 
 async def index_page(request: Request):

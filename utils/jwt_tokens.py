@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta, UTC
 
-from definitions.static import SECRET_KEY
+from constants.static import SECRET_KEY
 
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=2)):

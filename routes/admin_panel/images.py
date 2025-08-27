@@ -4,7 +4,7 @@ import jwt
 
 from starlette.requests import Request
 
-from definitions.static import SECRET_KEY, API_UPLOAD_KEY, templates
+from constants.static import SECRET_KEY, API_UPLOAD_KEY, templates
 
 
 async def admin_image_gallery(request: Request):

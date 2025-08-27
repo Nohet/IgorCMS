@@ -1,7 +1,7 @@
 import jwt
 from starlette.requests import Request
 
-from definitions.static import SECRET_KEY, templates
+from constants.static import SECRET_KEY, templates
 
 
 async def admin_show_plugins(request: Request):

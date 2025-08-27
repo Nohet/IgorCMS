@@ -1,4 +1,6 @@
 import json
+import secrets
+
 import bcrypt
 import aiomysql
 
@@ -8,7 +10,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from utils.tables import create_tables
-from definitions.static import templates
+from constants.static import templates
 
 base_dir = Path(__file__).resolve().parent.parent
 config_path = base_dir / 'config.json'
@@ -93,6 +95,7 @@ async def setup_database(request: Request):
         json_conf["database"]["user"] = username
         json_conf["database"]["pass"] = dbpass
         json_conf["database"]["port"] = port
+        json_conf["secretKey"] = secrets.token_hex(64)
 
         open(config_path, "w").write(json.dumps(json_conf, indent=4))
 

@@ -1,6 +1,6 @@
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from definitions.static import templates
+from constants.static import templates
 
 
 async def custom_page(request: Request):

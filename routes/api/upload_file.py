@@ -5,7 +5,7 @@ from pathlib import Path
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from definitions.static import API_UPLOAD_KEY
+from constants.static import API_UPLOAD_KEY
 from utils.responses import response_message
 
 

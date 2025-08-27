@@ -2,7 +2,7 @@ import jwt
 
 from starlette.requests import Request
 
-from definitions.static import SECRET_KEY, templates
+from constants.static import SECRET_KEY, templates
 from utils.text_utils import sanitize_text
 
 

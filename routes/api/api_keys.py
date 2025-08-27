@@ -6,7 +6,7 @@ import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from definitions.static import SECRET_KEY
+from constants.static import SECRET_KEY
 
 
 async def admin_generate_api_key(request: Request):

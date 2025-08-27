@@ -4,7 +4,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from utils.jwt_tokens import create_access_token
-from definitions.static import templates
+from constants.static import templates
 
 
 async def logout(_: Request):

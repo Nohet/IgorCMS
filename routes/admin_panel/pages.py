@@ -2,7 +2,7 @@ import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from definitions.static import SECRET_KEY, API_UPLOAD_KEY, templates
+from constants.static import SECRET_KEY, API_UPLOAD_KEY, templates
 from utils.text_utils import sanitize_text
 
 

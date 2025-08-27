@@ -16,7 +16,7 @@
 <div id="main-content">
     {% include 'navbar.html' %}
     <div id="content">
-        {% if permissions == 3 %}
+        {% if permissions == PermissionsEnum.ADMINISTRATOR %}
         <aside id="aside1">
             <div id="general_settings">
                 <p>General Settings</p>

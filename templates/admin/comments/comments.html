@@ -50,7 +50,7 @@
                 <td>
                     <p>{{ comment[3] }}</p>
                 </td>
-                {% if permissions == 3 %}
+                {% if permissions == PermissionsEnum.ADMINISTRATOR %}
                 <td>
                     <button onclick="location.href = '/admin/comments/delete?id={{ comment[4] }}'" class="delete-button">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

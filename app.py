@@ -118,6 +118,7 @@ middleware = [
     Middleware(VerifyCSRFTokenMiddleware),
 ]
 
+# Change debug to False in production
 app = Starlette(debug=True, routes=[], middleware=middleware)
 config = Config()
 

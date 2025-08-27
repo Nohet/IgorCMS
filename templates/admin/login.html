@@ -13,6 +13,7 @@
 <body>
 <div id="main">
     <form method="post" action="">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <h3>Log in to the admin panel.</h3>
         {% if message %}
         {% for msg in message %}

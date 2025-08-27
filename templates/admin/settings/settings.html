@@ -22,6 +22,7 @@
                 <p>General Settings</p>
                 <hr>
                 <form method="post" action="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     {% for message in messages %}
                     <div id="message">
                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
@@ -73,6 +74,7 @@
                 <p class="firstp">Change Password</p>
                 <hr>
                 <form method="post" action="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input name="form_type" value="password_settings" style="display: none;"/>
                     <p>Old Password *</p>
                     <input type="password" name="old_pass" id="old_pass" required>

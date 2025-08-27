@@ -19,6 +19,7 @@
     {% include 'navbar.html' %}
     <div id="content">
         <form method="post" action="">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <h3>Adding a New User</h3>
             {% for message in messages %}
             <div id="message">

@@ -1,14 +1,19 @@
 import json
+import secrets
+
 import aiomysql
 
 from pathlib import Path
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 
 from middleware.authorize import CheckAuthorized
 from middleware.authorize_api import CheckAuthorizedApi
 from middleware.check_permissions import CheckPermissions
+from middleware.csrf import CSRFMiddleware, VerifyCSRFTokenMiddleware
 from middleware.setup import CheckSetUp
 from plugin_manager.manager import PluginManager
 
@@ -103,7 +108,17 @@ routes = [
     Route("/", index_page, methods=["GET"]),
 
 ]
-app = Starlette(debug=True, routes=[])
+middleware = [
+    Middleware(SessionMiddleware, secret_key=secrets.token_hex(128)),
+    Middleware(CheckSetUp),
+    Middleware(CheckAuthorized),
+    Middleware(CheckPermissions),
+    Middleware(CheckAuthorizedApi),
+    Middleware(CSRFMiddleware),
+    Middleware(VerifyCSRFTokenMiddleware),
+]
+
+app = Starlette(debug=True, routes=[], middleware=middleware)
 config = Config()
 
 
@@ -141,8 +156,3 @@ async def shutdown():
     pool.close()
     await pool.wait_closed()
 
-
-app.add_middleware(CheckSetUp)
-app.add_middleware(CheckAuthorized)
-app.add_middleware(CheckPermissions)
-app.add_middleware(CheckAuthorizedApi)

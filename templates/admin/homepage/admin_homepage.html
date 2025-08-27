@@ -72,6 +72,7 @@
                     <p class="firstp">Quick Draft</p>
                     <hr>
                     <form method="post" action="">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="text" placeholder="Title" name="title" id="title" required><br>
                         <textarea name="content" id="post_content" placeholder="What's on your mind?" required></textarea><br>
                         <input type="submit" value="Save Draft">

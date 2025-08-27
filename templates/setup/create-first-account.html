@@ -12,6 +12,7 @@
 <body>
 <div id="main">
     <form method="post" action="">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <h3>Add the first account to the CMS</h3>
         {% for msg in message %}
         <div id="message">

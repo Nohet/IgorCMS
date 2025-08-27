@@ -74,6 +74,7 @@
             <p class="form-disclaimer">Your email address will not be published. Required fields are marked with *</p>
 
             <form action="" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="form-group">
                     <label>Name <span class="required">*</span></label>
                     <input type="text" name="author" required>

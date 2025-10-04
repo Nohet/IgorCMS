@@ -61,7 +61,7 @@ class PluginManager:
                 logger.error(f"Plugins directory not found: {plugins_dir}")
                 return
 
-            plugin_files = [p for p in os.listdir(plugins_dir) if not p.startswith("_")]
+            plugin_files = [p for p in os.listdir(plugins_dir) if not p.startswith("_") and not p.startswith(".")]
         except Exception as e:
             logger.error(f"Failed to read plugins directory: {e}")
             return

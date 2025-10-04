@@ -1,15 +1,12 @@
-import json
 import secrets
 
-import aiomysql
-
-from pathlib import Path
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 
+from crud.mysql import MySQLCRUD
 from middleware.authorize import CheckAuthorized
 from middleware.authorize_api import CheckAuthorizedApi
 from middleware.check_permissions import CheckPermissions
@@ -134,26 +131,18 @@ async def startup():
     app.routes.extend(pm.routes)
     app.state.plugins = pm.plugins
 
-    json_conf = json.loads(open(Path(__file__).resolve().parent / "config.json").read())
-
-    if any(value is None for value in json_conf["database"].values()):
-        return
-
-    app.state.db_pool = await aiomysql.create_pool(
-        host=json_conf["database"]["host"],
-        port=int(json_conf["database"]["port"]),
-        user=json_conf["database"]["user"],
-        password=json_conf["database"]["pass"],
-        db=json_conf["database"]['dbname'],
-        minsize=0,
-        maxsize=100,
-        autocommit=True
-    )
+    app.state.crud = MySQLCRUD()
+    await app.state.crud.initialize()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    pool = app.state.db_pool
+    pool = getattr(app.state.crud, "pool", None)
+    print(pool)
+
+    if not pool:
+        return
+
     pool.close()
     await pool.wait_closed()
 

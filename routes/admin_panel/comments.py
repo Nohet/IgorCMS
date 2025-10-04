@@ -1,31 +1,24 @@
-import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from constants.static import SECRET_KEY, templates
+from constants.static import templates
+from factories.user_factory import get_user
+from models.user import UserJWT
+from utils.dependency_injection import dependency_injection
 
 
 async def admin_delete_comment(request: Request):
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            comment_id = request.query_params.get("id")
-
-            await cursor.execute("DELETE FROM comments WHERE id = %s", (comment_id,))
-
-            return RedirectResponse("/admin/comments/view")
+    comment_id = int(request.query_params.get("id"))
+    await request.app.state.crud.comments.delete(comment_id)
+    return RedirectResponse("/admin/comments/view")
 
 
-async def admin_comments_view(request: Request):
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
+@dependency_injection(get_user)
+async def admin_comments_view(request: Request, user: UserJWT):
 
-            await cursor.execute("""SELECT comments.author, comments.content, posts.title, comments.published_at, comments.id
-                            FROM `comments` 
-                            INNER JOIN posts on posts.id = comments.post_id GROUP BY published_at;""")
-            comments = await cursor.fetchall()
+    comments = await request.app.state.crud.comments.list_with_posts_for_admin()
 
-            return templates.TemplateResponse("admin/comments/comments.html", {"request": request, "comments": comments,
-                                                                               "firstname": token.get("firstname"),
-                                                                               "lastname": token.get("lastname"),
-                                                                               "permissions": token.get("permissions")})
+    return templates.TemplateResponse("admin/comments/comments.html", {"request": request, "comments": comments,
+                                                                       "firstname": getattr(user, "firstname", ""),
+                                                                       "lastname": getattr(user, "lastname", ""),
+                                                                       "permissions": getattr(user, "permissions", "")})

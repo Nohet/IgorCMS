@@ -1,15 +1,11 @@
 import json
 import secrets
 
-import bcrypt
-import aiomysql
-
 from pathlib import Path
 
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from utils.tables import create_tables
 from constants.static import templates
 
 base_dir = Path(__file__).resolve().parent.parent
@@ -18,45 +14,43 @@ config_path = base_dir / 'config.json'
 
 async def setup_add_first_account(request: Request):
     form_data = await request.form()
+    crud_setup = getattr(request.app.state.crud, "setup", None)
 
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT COUNT(id) FROM users")
-            account_count = (await cursor.fetchone())[0]
+    if crud_setup is None:
+        return templates.TemplateResponse(
+            "setup/create-first-account.html",
+            {"request": request, "message": ["Database connection is not ready yet. Please configure the database first."]}
+        )
 
-            if account_count > 0:
-                return templates.TemplateResponse(request, "setup/already-setted-up.html")
+    account_count = await crud_setup.get_users_count()
 
-            if form_data.get("pass"):
-                firstname = form_data.get("firstname")
-                lastname = form_data.get("lastname")
-                email = form_data.get("email")
-                password = form_data.get("pass")
+    if account_count > 0:
+        return templates.TemplateResponse("setup/already-setted-up.html", {"request": request})
 
-                try:
-                    await cursor.execute(
-                        """
-                            INSERT INTO users (firstname, lastname, email, password_hash, permissions, profile_picture, description) 
-                            VALUES (%s, %s, %s, %s, 3, '', '')
-                        """,
-                        (firstname, lastname, email,
-                         bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"))
-                    )
+    if form_data.get("pass"):
+        firstname = form_data.get("firstname")
+        lastname = form_data.get("lastname")
+        email = form_data.get("email")
+        password = form_data.get("pass")
 
-                    return RedirectResponse("/admin/login")
+        try:
+            await crud_setup.create_initial_user(firstname, lastname, email, password)
+            return RedirectResponse("/admin/login")
+        except Exception:
+            return templates.TemplateResponse(
+                "setup/create-first-account.html",
+                {"request": request,
+                 "message": ["Something went wrong! Make sure you've filled in all the fields correctly."]}
+            )
 
-                except:
-                    return templates.TemplateResponse("setup/create-first-account.html", {"request": request, "message":
-                        ["Something went wrong! Make sure you've filled in all the fields correctly."]})
-
-    return templates.TemplateResponse(request, "setup/create-first-account.html")
+    return templates.TemplateResponse("setup/create-first-account.html", {"request": request})
 
 
 async def setup_database(request: Request):
     db_json = json.loads(open(config_path).read())
 
     if not any(value is None for value in db_json["database"].values()):
-        return templates.TemplateResponse(request, "setup/already-setted-up.html")
+        return templates.TemplateResponse("setup/already-setted-up.html", {"request": request})
 
     form_data = await request.form()
     if form_data:
@@ -69,21 +63,20 @@ async def setup_database(request: Request):
         port = form_data.get("port")
 
         try:
-
-            request.app.state.db_pool = await aiomysql.create_pool(
+            crud = request.app.state.crud
+            await crud.configure_database(
                 host=hostname,
-                port=int(port),
+                port=port,
                 user=username,
                 password=dbpass,
-                db=dbname,
-                minsize=0,
-                maxsize=100,
-                autocommit=True
+                database_name=dbname
             )
 
-            async with request.app.state.db_pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await create_tables(cursor)
+            crud_setup = getattr(crud, "setup", None)
+            if crud_setup is None:
+                raise RuntimeError("Setup CRUD is not available after configuring the database")
+
+            await crud_setup.ensure_schema()
 
         except Exception as e:
             print(e)
@@ -91,9 +84,9 @@ async def setup_database(request: Request):
                 "The connection to the database failed, make sure you are entering the correct data!"]})
 
         json_conf["database"]["host"] = hostname
-        json_conf["database"]["dbname"] = dbname
+        json_conf["database"]["database_name"] = dbname
         json_conf["database"]["user"] = username
-        json_conf["database"]["pass"] = dbpass
+        json_conf["database"]["password"] = dbpass
         json_conf["database"]["port"] = port
         json_conf["secretKey"] = secrets.token_hex(64)
 

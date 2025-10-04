@@ -24,7 +24,11 @@ class CheckAuthorized(BaseHTTPMiddleware):
             if not access_token:
                 return RedirectResponse("/admin/login")
 
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        except jwt.ExpiredSignatureError:
+            # Implement refreshing token later
+            pass
+
+        except jwt.InvalidTokenError:
             return RedirectResponse("/admin/login")
 
         return await call_next(request)

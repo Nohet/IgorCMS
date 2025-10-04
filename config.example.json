@@ -1,9 +1,9 @@
 {
     "database": {
         "user": null,
-        "pass": null,
+        "password": null,
         "host": null,
         "port": null,
-        "dbname": null
+        "database_name": null
     }
 }

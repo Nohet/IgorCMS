@@ -1,56 +1,39 @@
-import jwt
-
 from starlette.requests import Request
 
 from constants.static import SECRET_KEY, templates
+from models.user import UserJWT
 from utils.text_utils import sanitize_text
+from factories.user_factory import get_user
+from utils.dependency_injection import dependency_injection
 
 
-async def admin_homepage(request: Request):
+@dependency_injection(get_user)
+async def admin_homepage(request: Request, user: UserJWT):
     form_data = await request.form()
-    token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
 
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if form_data.get("title") and form_data.get("content"):
-                author_id = token["user_id"]
+    if form_data.get("title") and form_data.get("content"):
+        author_id = user.user_id if user else None
+        await request.app.state.crud.homepage.create_post_draft(
+            author_id, form_data.get("title"), sanitize_text(form_data.get("title")), form_data.get("content")
+        )
 
-                await cursor.execute(
-                    "INSERT INTO posts(author_id, title, slug, content, status) VALUES (%s, %s, %s, %s, 'draft')",
-                    (
-                        author_id, form_data.get("title"),
-                        sanitize_text(form_data.get("title")), form_data.get("content")))
+    post_count, pages_count, comments_count = await request.app.state.crud.homepage.counts()
+    last_post = await request.app.state.crud.homepage.last_post()
+    last_comment = await request.app.state.crud.homepage.last_comment_with_post()
 
-            await cursor.execute("SELECT COUNT(*) from posts;")
-            post_count = (await cursor.fetchone())[0]
+    return templates.TemplateResponse("admin/homepage/admin_homepage.html",
+                                      {"request": request, "post_count": post_count,
+                                       "pages_count": pages_count, "comments_count": comments_count,
 
-            await cursor.execute("SELECT COUNT(*) from pages;")
-            pages_count = (await cursor.fetchone())[0]
+                                       "last_post": {"date": last_post[0] if last_post else "",
+                                                     "title": last_post[1] if last_post else "",
+                                                     "exists": last_post},
 
-            await cursor.execute("SELECT COUNT(*) from comments;")
-            comments_count = (await cursor.fetchone())[0]
+                                       "last_comment": {"author": last_comment[0] if last_comment else "",
+                                                        "content": last_comment[1] if last_comment else "",
+                                                        "published_at": last_comment[2] if last_comment else "",
+                                                        "post_title": last_comment[3] if last_comment else "",
+                                                        "exists": last_comment},
 
-            await cursor.execute("SELECT created_at, title FROM `posts` GROUP BY created_at DESC LIMIT 1")
-            last_post = await cursor.fetchone()
-
-            await cursor.execute("""SELECT comments.author, comments.content, comments.published_at, posts.title 
-                            FROM `comments` 
-                            INNER JOIN posts on posts.id = comments.post_id GROUP BY published_at DESC LIMIT 1;""")
-            last_comment = await cursor.fetchone()
-
-            return templates.TemplateResponse("admin/homepage/admin_homepage.html",
-                                              {"request": request, "post_count": post_count,
-                                               "pages_count": pages_count, "comments_count": comments_count,
-
-                                               "last_post": {"date": last_post[0] if last_post else "",
-                                                             "title": last_post[1] if last_post else "",
-                                                             "exists": last_post},
-
-                                               "last_comment": {"author": last_comment[0] if last_comment else "",
-                                                                "content": last_comment[1] if last_comment else "",
-                                                                "published_at": last_comment[2] if last_comment else "",
-                                                                "post_title": last_comment[3] if last_comment else "",
-                                                                "exists": last_comment},
-
-                                               "firstname": token.get("firstname"), "lastname": token.get("lastname"),
-                                               "permissions": token.get("permissions")})
+                                       "firstname": getattr(user, "firstname", ""), "lastname": getattr(user, "lastname", ""),
+                                       "permissions": getattr(user, "permissions", "")})

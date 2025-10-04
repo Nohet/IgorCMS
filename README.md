@@ -1,18 +1,22 @@
 ## What is it?
-IgorCMS is a CMS (Content Management System) written in Python using the Starlette framework and a MySQL/MariaDB database.
+
+IgorCMS is a CMS (Content Management System) written in Python using the Starlette framework and a MySQL/MariaDB database but other databases can be implemented easily.
 
 ---
 
 ## Screenshot
+
 ![Screenshot showing the admin panel](https://i.imgur.com/RVUjRb1.png)
 
 ---
 
 ## How to run my CMS?
+
 Recommended Python version: <3.10
 
 1. Install the required libraries:
-    - `pip install -r requirements.txt`
+
+   - `pip install -r requirements.txt`
 
 2. Run the database (MySQL/MariaDB).
 
@@ -20,7 +24,8 @@ Recommended Python version: <3.10
    The name of the database should be provided during the first setup.
 
 4. Start the CMS. By default, the CMS runs in debug mode. To disable it, change `debug=True` to `debug=False` in the `app.py` file:
-    - `uvicorn app:app` or `python -m uvicorn app:app`
+
+   - `uvicorn app:app` or `python -m uvicorn app:app`
 
 5. Open your browser and go to the CMS website.
    If the CMS is not configured, a form will appear allowing you to perform the setup and create the first user account.
@@ -28,6 +33,7 @@ Recommended Python version: <3.10
 ---
 
 ## Features of my CMS:
+
 - Create, edit, and delete pages.
 - Create, edit, and delete categories.
 - Create, edit, and delete posts.

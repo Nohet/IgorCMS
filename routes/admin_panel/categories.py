@@ -1,102 +1,75 @@
-import jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from constants.static import SECRET_KEY, templates
+from constants.static import templates
+from factories.user_factory import get_user
+from models.user import UserJWT
+from utils.dependency_injection import dependency_injection
 
 
-async def admin_edit_category(request: Request):
+@dependency_injection(get_user)
+async def admin_edit_category(request: Request, user: UserJWT):
     messages = []
+    category_id = int(request.query_params.get("id"))
 
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
-            category_id = request.query_params.get("id")
+    form_data = await request.form()
 
-            form_data = await request.form()
+    if form_data:
+        name = form_data.get("name")
+        description = form_data.get("description")
+        parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
 
-            if form_data:
-                name = form_data.get("name")
-                description = form_data.get("description")
-                parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
+        await request.app.state.crud.categories.update(category_id, name, description, parent_id)
+        messages.append("Successfully saved changes!")
 
-                await cursor.execute("""UPDATE categories SET name=%s, description=%s, parent_id=%s, 
-                updated_at=CURRENT_TIMESTAMP() WHERE id = %s""",
-                                     (name, description, parent_id, category_id))
-                messages.append("Successfully saved changes!")
+    categories = await request.app.state.crud.categories.list_all_basic()
+    data = await request.app.state.crud.categories.get_details(category_id)
 
-            await cursor.execute("SELECT id, name FROM `categories`")
-            categories = await cursor.fetchall()
-
-            await cursor.execute("SELECT name, description FROM `categories` WHERE id = %s", (category_id,))
-            data = await cursor.fetchone()
-
-            return templates.TemplateResponse("admin/categories/edit/edit_category.html", {"request": request,
-                                                                                           "data": data,
-                                                                                           "messages": messages,
-                                                                                           "categories": categories,
-                                                                                           "firstname": token.get(
-                                                                                               "firstname"),
-                                                                                           "lastname": token.get(
-                                                                                               "lastname"),
-                                                                                           "permissions": token.get(
-                                                                                               "permissions")})
+    return templates.TemplateResponse("admin/categories/edit/edit_category.html", {"request": request,
+                                                                                 "data": data,
+                                                                                 "messages": messages,
+                                                                                 "categories": categories,
+                                                                                 "firstname": getattr(user, "firstname", ""),
+                                                                                 "lastname": getattr(user, "lastname", ""),
+                                                                                 "permissions": getattr(user, "permissions", "")})
 
 
 async def admin_delete_category(request: Request):
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            category_id = request.query_params.get("id")
-
-            await cursor.execute("DELETE FROM categories WHERE id = %s", (category_id,))
-
-            return RedirectResponse("/admin/categories/view")
+    category_id = int(request.query_params.get("id"))
+    await request.app.state.crud.categories.delete(category_id)
+    return RedirectResponse("/admin/categories/view")
 
 
-async def admin_add_category(request: Request):
+@dependency_injection(get_user)
+async def admin_add_category(request: Request, user: UserJWT):
     messages = []
+    form_data = await request.form()
 
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
-            form_data = await request.form()
+    if form_data:
+        name = form_data.get("name")
+        description = form_data.get("description")
+        parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
 
-            if form_data:
-                name = form_data.get("name")
-                description = form_data.get("description")
-                parent_id = int(form_data.get("parent_id")) if form_data.get("parent_id") and form_data.get("parent_id").isdigit() else None
+        await request.app.state.crud.categories.create(name, description, parent_id)
+        messages.append("Successfully added a new category!")
 
-                await cursor.execute("INSERT INTO categories(name, description, parent_id) VALUES (%s, %s, %s)",
-                                     (name, description, parent_id))
-                messages.append("Successfully added a new category!")
+    categories = await request.app.state.crud.categories.list_all_basic()
 
-            await cursor.execute("SELECT id, name FROM `categories`")
-            categories = await cursor.fetchall()
-
-            return templates.TemplateResponse("admin/categories/add/add_category.html", {"request": request,
-                                                                                         "messages": messages,
-                                                                                         "categories": categories,
-                                                                                         "firstname": token.get(
-                                                                                             "firstname"),
-                                                                                         "lastname": token.get(
-                                                                                             "lastname"),
-                                                                                         "permissions": token.get(
-                                                                                             "permissions")})
+    return templates.TemplateResponse("admin/categories/add/add_category.html", {"request": request,
+                                                                                "messages": messages,
+                                                                                "categories": categories,
+                                                                                "firstname": getattr(user, "firstname", ""),
+                                                                                "lastname": getattr(user, "lastname", ""),
+                                                                                "permissions": getattr(user, "permissions", "")})
 
 
-async def admin_view_categories(request: Request):
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
+@dependency_injection(get_user)
+async def admin_view_categories(request: Request, user: UserJWT):
 
-            await cursor.execute("SELECT id, name, description, created_at, parent_id FROM `categories`")
-            categories = await cursor.fetchall()
+    categories = await request.app.state.crud.categories.list_all_full()
 
-            return templates.TemplateResponse("admin/categories/view/view_categories.html", {"request": request,
-                                                                                             "categories": categories,
-                                                                                             "firstname": token.get(
-                                                                                                 "firstname"),
-                                                                                             "lastname": token.get(
-                                                                                                 "lastname"),
-                                                                                             "permissions": token.get(
-                                                                                                 "permissions")})
+    return templates.TemplateResponse("admin/categories/view/view_categories.html", {"request": request,
+                                                                                     "categories": categories,
+                                                                                     "firstname": getattr(user, "firstname", ""),
+                                                                                     "lastname": getattr(user, "lastname", ""),
+                                                                                     "permissions": getattr(user, "permissions", "")})

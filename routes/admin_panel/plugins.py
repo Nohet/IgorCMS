@@ -1,15 +1,16 @@
-import jwt
 from starlette.requests import Request
 
-from constants.static import SECRET_KEY, templates
+from constants.static import templates
+from factories.user_factory import get_user
+from models.user import UserJWT
+from utils.dependency_injection import dependency_injection
 
 
-async def admin_show_plugins(request: Request):
-    token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
+@dependency_injection(get_user)
+async def admin_show_plugins(request: Request, user: UserJWT):
 
     return templates.TemplateResponse("admin/plugins/plugins.html", {"request": request,
                                                                      "plugins": request.app.state.plugins,
-                                                                     "firstname": token.get("firstname"),
-                                                                     "lastname": token.get("lastname"),
-                                                                     "permissions": token.get(
-                                                                         "permissions")})
+                                                                     "firstname": getattr(user, "firstname", ""),
+                                                                     "lastname": getattr(user, "lastname", ""),
+                                                                     "permissions": getattr(user, "permissions", "")})

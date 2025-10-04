@@ -1,14 +1,15 @@
 import os
 
-import jwt
-
 from starlette.requests import Request
 
-from constants.static import SECRET_KEY, API_UPLOAD_KEY, templates
+from constants.static import API_UPLOAD_KEY, templates
+from factories.user_factory import get_user
+from models.user import UserJWT
+from utils.dependency_injection import dependency_injection
 
 
-async def admin_image_gallery(request: Request):
-    token = jwt.decode(request.cookies.get("access_token"), SECRET_KEY, algorithms=["HS256"])
+@dependency_injection(get_user)
+async def admin_image_gallery(request: Request, user: UserJWT):
 
     image_storage_path = os.path.join(os.path.dirname(__file__), '../../static/image_storage')
     image_storage_path = os.path.abspath(image_storage_path)
@@ -18,7 +19,6 @@ async def admin_image_gallery(request: Request):
     return templates.TemplateResponse("admin/image_gallery/image_gallery.html",
                                       {"request": request,
                                        "images": images,
-                                       "API_UPLOAD_KEY": API_UPLOAD_KEY,
-                                       "firstname": token.get("firstname"),
-                                       "lastname": token.get("lastname"),
-                                       "permissions": token.get("permissions")})
+                                       "firstname": getattr(user, "firstname", ""),
+                                       "lastname": getattr(user, "lastname", ""),
+                                       "permissions": getattr(user, "permissions", "")})

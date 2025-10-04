@@ -9,25 +9,32 @@ from utils.text_utils import sanitize_text
 
 
 async def sitemap(request: Request):
-    async with request.app.state.db_pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            xml_template_path = os.path.join(os.path.dirname(__file__), '../static/sitemap.template.xml')
-            xml_template_path = os.path.abspath(xml_template_path)
+    xml_template_path = os.path.join(os.path.dirname(__file__), '../static/sitemap.template.xml')
+    xml_template_path = os.path.abspath(xml_template_path)
 
-            await cursor.execute("""SELECT categories.name, slug, posts.updated_at
-                                    FROM `posts` 
-                                    LEFT JOIN categories ON categories.id = posts.category_id""")
-            posts = await cursor.fetchall()
-            posts = [[(sanitize_text(post[0]) if post[0] else 'bez-kategorii'), post[1], post[2].strftime("%Y-%m-%d")]
-                     for post in posts]
+    crud_sitemap = getattr(request.app.state.crud, "sitemap", None)
+    if crud_sitemap is None:
+        return Response(status_code=503, content="Sitemap is not available while the database is offline.")
 
-            await cursor.execute("SELECT slug, updated_at FROM `pages` WHERE id != 1")
-            custom_pages = await cursor.fetchall()
-            custom_pages = [[custom_page[0], custom_page[1].strftime("%Y-%m-%d")] for custom_page in custom_pages]
+    raw_posts = await crud_sitemap.list_posts_with_categories()
+    posts = [
+        [
+            sanitize_text(post[0]) if post[0] else 'bez-kategorii',
+            post[1],
+            post[2].strftime("%Y-%m-%d") if post[2] else datetime.now(UTC).strftime("%Y-%m-%d")
+        ]
+        for post in raw_posts
+    ]
 
-            template = Template(open(xml_template_path).read())
-            rendered_xml = template.render(today=datetime.now(UTC).strftime("%Y-%m-%d"), custom_pages=custom_pages,
-                                           posts=posts, baseUrl=("https://" if request.url.is_secure else "http://")
-                                           + request.url.hostname + f":{request.url.port}")
+    raw_custom_pages = await crud_sitemap.list_custom_pages()
+    custom_pages = [
+        [page[0], page[1].strftime("%Y-%m-%d") if page[1] else datetime.now(UTC).strftime("%Y-%m-%d")]
+        for page in raw_custom_pages
+    ]
 
-            return Response(content=rendered_xml, media_type="application/xml")
+    template = Template(open(xml_template_path).read())
+    rendered_xml = template.render(today=datetime.now(UTC).strftime("%Y-%m-%d"), custom_pages=custom_pages,
+                                   posts=posts, baseUrl=("https://" if request.url.is_secure else "http://")
+                                   + request.url.hostname + f":{request.url.port}")
+
+    return Response(content=rendered_xml, media_type="application/xml")

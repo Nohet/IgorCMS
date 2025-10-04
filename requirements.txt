@@ -7,6 +7,5 @@ colorama~=0.4.6
 uvicorn
 python-multipart
 itsdangerous
-nest-asyncio~=1.6.0
 email-validator
 pydantic~=2.11.7

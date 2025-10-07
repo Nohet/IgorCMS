@@ -51,24 +51,24 @@ routes = [
     Route("/admin/homepage", admin_homepage, methods=["GET", "POST"]),
 
     Route("/admin/comments/view", admin_comments_view, methods=["GET"]),
-    Route("/admin/comments/delete", admin_delete_comment, methods=["GET"]),
+    Route("/admin/comments/delete", admin_delete_comment, methods=["POST"]),
 
     Route("/admin/users/view", admin_users_view, methods=["GET"]),
-    Route("/admin/users/delete", admin_delete_user, methods=["GET"]),
+    Route("/admin/users/delete", admin_delete_user, methods=["POST"]),
     Route("/admin/users/add", admin_users_add, methods=["GET", "POST"]),
 
     Route("/admin/posts/view", admin_show_posts, methods=["GET"]),
-    Route("/admin/posts/delete", admin_delete_post, methods=["GET"]),
+    Route("/admin/posts/delete", admin_delete_post, methods=["POST"]),
     Route("/admin/posts/add", admin_add_post, methods=["GET", "POST"]),
     Route("/admin/posts/edit", admin_edit_post, methods=["GET", "POST"]),
 
     Route("/admin/categories/view", admin_view_categories, methods=["GET", "POST"]),
     Route("/admin/categories/edit", admin_edit_category, methods=["GET", "POST"]),
-    Route("/admin/categories/delete", admin_delete_category, methods=["GET"]),
+    Route("/admin/categories/delete", admin_delete_category, methods=["POST"]),
     Route("/admin/categories/add", admin_add_category, methods=["GET", "POST"]),
 
     Route("/admin/pages/view", admin_show_pages, methods=["GET"]),
-    Route("/admin/pages/delete", admin_delete_page, methods=["GET"]),
+    Route("/admin/pages/delete", admin_delete_page, methods=["POST"]),
     Route("/admin/pages/add", admin_add_page, methods=["GET", "POST"]),
     Route("/admin/pages/edit", admin_edit_page, methods=["GET", "POST"]),
 
@@ -76,8 +76,8 @@ routes = [
     Route("/admin/images/view", admin_image_gallery, methods=["GET"]),
 
     Route("/admin/plugins/view", admin_show_plugins, methods=["GET"]),
-    Route("/admin/settings/generate-api-key", admin_generate_api_key, methods=["GET"]),
-    Route("/admin/settings/delete-api-key", admin_delete_api_key, methods=["GET"]),
+    Route("/admin/settings/generate-api-key", admin_generate_api_key, methods=["POST"]),
+    Route("/admin/settings/delete-api-key", admin_delete_api_key, methods=["POST"]),
 
     Route("/api/upload-file", api_save_image_from_data_uri, methods=["POST"]),
     Route("/api/v1/categories", api_list_categories, methods=["GET"]),
@@ -138,11 +138,11 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     pool = getattr(app.state.crud, "pool", None)
-    print(pool)
 
     if not pool:
         return
 
     pool.close()
     await pool.wait_closed()
+
 

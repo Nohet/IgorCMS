@@ -19,6 +19,10 @@ body {
 
 }
 
+#uploadStatus {
+    margin-left: 2rem;
+}
+
 main {
     float: left;
     width: 100%;
@@ -100,3 +104,23 @@ input[type="file"] {
     width: 100%;
     height: 100%;
 }
+
+.upload-status {
+    margin: 0.5rem 0 0 2rem;
+    font-size: 0.95rem;
+    color: #333;
+    min-height: 1.2rem;
+}
+
+.upload-status.is-loading {
+    color: #0F52BA;
+}
+
+.upload-status.is-success {
+    color: #1C7C2C;
+}
+
+.upload-status.is-error {
+    color: #C0392B;
+}
+

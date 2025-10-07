@@ -1,5 +1,3 @@
-import urllib.parse
-
 import bcrypt
 
 from starlette.requests import Request
@@ -47,7 +45,6 @@ async def admin_settings(request: Request, user):
     return templates.TemplateResponse("admin/settings/settings.html", {"request": request,
                                                                        "messages": messages,
                                                                        "api_keys": api_keys,
-                                                                       "quote_plus": urllib.parse.quote_plus,
                                                                        "index_page": index_page,
                                                                        "firstname": getattr(user, "firstname", ""),
                                                                        "lastname": getattr(user, "lastname", ""),

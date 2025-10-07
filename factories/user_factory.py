@@ -8,5 +8,7 @@ def get_user(request):
     token = request.cookies.get("access_token")
     if not token:
         return None
+
     data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-    return UserJWT(**data)
+
+    return UserJWT.model_validate(data)

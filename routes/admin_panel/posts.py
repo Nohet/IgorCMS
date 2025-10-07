@@ -5,6 +5,7 @@ from constants.static import templates
 from factories.user_factory import get_user
 from models.user import UserJWT
 from utils.dependency_injection import dependency_injection
+from enums.permissions import Permissions
 from utils.text_utils import sanitize_text
 
 
@@ -53,10 +54,19 @@ async def admin_edit_post(request: Request, user: UserJWT):
                                                                         "permissions": getattr(user, "permissions", "")})
 
 
-async def admin_delete_post(request: Request):
-    post_id = int(request.query_params.get("id"))
-    await request.app.state.crud.posts.admin_delete(post_id)
-    return RedirectResponse("/admin/posts/view")
+@dependency_injection(get_user)
+async def admin_delete_post(request: Request, user: UserJWT):
+    if getattr(user, 'permissions', None) != Permissions.ADMINISTRATOR:
+        return RedirectResponse('/admin/posts/view', status_code=303)
+
+    form_data = await request.form()
+    post_id = form_data.get('post_id')
+
+    if not post_id or not str(post_id).isdigit():
+        return RedirectResponse('/admin/posts/view', status_code=303)
+
+    await request.app.state.crud.posts.admin_delete(int(post_id))
+    return RedirectResponse('/admin/posts/view', status_code=303)
 
 
 @dependency_injection(get_user)

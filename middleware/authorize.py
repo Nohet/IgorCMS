@@ -15,20 +15,37 @@ class CheckAuthorized(BaseHTTPMiddleware):
         token = request.cookies.get("access_token")
 
         if not token:
-            return RedirectResponse("/admin/login")
+            response = RedirectResponse("/admin/login")
+            response.delete_cookie("access_token", httponly=True)
+            return response
 
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            access_token = payload.get("access_token")
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            response = RedirectResponse("/admin/login")
+            response.delete_cookie("access_token", httponly=True)
+            return response
 
-            if not access_token:
-                return RedirectResponse("/admin/login")
+        access_token = payload.get("access_token")
+        user_id = payload.get("user_id")
 
-        except jwt.ExpiredSignatureError:
-            # Implement refreshing token later
-            pass
+        if not access_token or not user_id:
+            response = RedirectResponse("/admin/login")
+            response.delete_cookie("access_token", httponly=True)
+            return response
 
-        except jwt.InvalidTokenError:
-            return RedirectResponse("/admin/login")
+        crud = getattr(request.app.state, "crud", None)
+        auth_crud = getattr(crud, "auth", None) if crud else None
+
+        if not auth_crud:
+            response = RedirectResponse("/admin/login")
+            response.delete_cookie("access_token", httponly=True)
+            return response
+
+        is_valid = await auth_crud.validate_access_token(user_id, access_token)
+        if not is_valid:
+            response = RedirectResponse("/admin/login")
+            response.delete_cookie("access_token", httponly=True)
+            return response
 
         return await call_next(request)

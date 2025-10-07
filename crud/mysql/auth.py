@@ -31,3 +31,20 @@ class AuthCRUD:
                     }
 
                 return False
+
+    async def validate_access_token(self, user_id: int, access_token: str) -> bool:
+        if not user_id or not access_token:
+            return False
+
+        async with self.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    "SELECT password_hash FROM users WHERE id = %s", (user_id,)
+                )
+                row = await cursor.fetchone()
+
+        if not row:
+            return False
+
+        stored_hash = row[0]
+        return stored_hash == access_token

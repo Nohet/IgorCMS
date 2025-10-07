@@ -35,9 +35,14 @@ async def admin_edit_category(request: Request, user: UserJWT):
 
 
 async def admin_delete_category(request: Request):
-    category_id = int(request.query_params.get("id"))
-    await request.app.state.crud.categories.delete(category_id)
-    return RedirectResponse("/admin/categories/view")
+    form_data = await request.form()
+    category_id = form_data.get('category_id')
+
+    if not category_id or not str(category_id).isdigit():
+        return RedirectResponse('/admin/categories/view', status_code=303)
+
+    await request.app.state.crud.categories.delete(int(category_id))
+    return RedirectResponse('/admin/categories/view', status_code=303)
 
 
 @dependency_injection(get_user)

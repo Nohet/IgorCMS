@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -85,7 +85,15 @@
             const reader = new FileReader();
 
             reader.onload = function (e) {
-                fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+                fetch("/api/upload-file", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": "{{ csrf_token }}"
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" })
+                });
             };
 
             reader.readAsDataURL(file);
@@ -131,9 +139,11 @@
                             fetch('/api/upload-file', {
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': '{{ csrf_token }}'
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({
                                     image: dataUri,
                                     filename: file.name,
                                     uploadKey: "{{ API_UPLOAD_KEY|safe }}"
@@ -142,7 +152,7 @@
                             .then(response => response.json())
                             .then(result => {
                                 if (result.path) {
-                                    resolve(result.path); // Assuming the API returns the image URL
+                                    resolve(result.path);
                                 } else {
                                     reject('Invalid response from server');
                                 }

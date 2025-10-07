@@ -8,9 +8,14 @@ from utils.dependency_injection import dependency_injection
 
 
 async def admin_delete_comment(request: Request):
-    comment_id = int(request.query_params.get("id"))
-    await request.app.state.crud.comments.delete(comment_id)
-    return RedirectResponse("/admin/comments/view")
+    form_data = await request.form()
+    comment_id = form_data.get('comment_id')
+
+    if not comment_id or not str(comment_id).isdigit():
+        return RedirectResponse('/admin/comments/view', status_code=303)
+
+    await request.app.state.crud.comments.delete(int(comment_id))
+    return RedirectResponse('/admin/comments/view', status_code=303)
 
 
 @dependency_injection(get_user)

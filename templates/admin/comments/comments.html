@@ -52,13 +52,16 @@
                 </td>
                 {% if permissions == PermissionsEnum.ADMINISTRATOR %}
                 <td>
-                    <button onclick="location.href = '/admin/comments/delete?id={{ comment[4] }}'" class="delete-button">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
-                        </svg>
-                    </button>
+                    <form method="post" action="/admin/comments/delete" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="comment_id" value="{{ comment[4] }}">
+                        <button type="submit" class="delete-button">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
+                            </svg>
+                        </button>
+                    </form>
                 </td>
                 {% endif %}
             </tr>

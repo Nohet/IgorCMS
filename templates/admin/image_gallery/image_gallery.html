@@ -20,6 +20,7 @@
             <main>
                 <p id="uploadPhotoText">Upload photo:</p>
                 <input type="file" id="new_image" name="new_image">
+                <p id="uploadStatus" class="upload-status" role="status" aria-live="polite"></p>
 
                 <div class="gallery">
                     {% for image in images%}
@@ -34,22 +35,64 @@
         </div>
     </div>
     <script>
+        const uploadStatus = document.getElementById('uploadStatus');
+
         document.getElementById('new_image').addEventListener('change', (event) => {
-                const file = event.target.files[0];
+            const file = event.target.files[0];
 
-                if (file) {
-                    const reader = new FileReader();
+            if (file) {
+                const reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
-                    };
+                reader.onload = async function (e) {
+                    if (uploadStatus) {
+                        uploadStatus.textContent = 'Uploading image...';
+                        uploadStatus.classList.remove('is-success', 'is-error');
+                        uploadStatus.classList.add('is-loading');
+                    }
 
-                    reader.readAsDataURL(file);
+                    try {
+                        const response = await fetch("/api/upload-file", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-Token": "{{ csrf_token }}"
+                            },
+                            credentials: "same-origin",
+                            body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" })
+                        });
 
-                } else {
-                    console.log('No file selected.');
+                        const result = await response.json().catch(() => ({}));
+
+                        if (!response.ok || !result.path) {
+                            throw new Error(result.message || 'Upload failed.');
+                        }
+
+                        if (uploadStatus) {
+                            uploadStatus.textContent = 'Image successfully uploaded.';
+                            uploadStatus.classList.remove('is-loading', 'is-error');
+                            uploadStatus.classList.add('is-success');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        if (uploadStatus) {
+                            uploadStatus.textContent = error.message || 'Upload failed.';
+                            uploadStatus.classList.remove('is-loading', 'is-success');
+                            uploadStatus.classList.add('is-error');
+                        }
+                    }
+                };
+
+                reader.readAsDataURL(file);
+
+            } else {
+                if (uploadStatus) {
+                    uploadStatus.textContent = 'No file selected.';
+                    uploadStatus.classList.remove('is-loading', 'is-success');
+                    uploadStatus.classList.add('is-error');
                 }
-            });
+                console.log('No file selected.');
+            }
+        });
     </script>
 </body>
 

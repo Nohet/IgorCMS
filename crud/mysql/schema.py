@@ -23,7 +23,6 @@ async def create_tables(cursor: aiomysql.Cursor):
           PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
         """,
-
         """
         CREATE TABLE IF NOT EXISTS `comments` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -100,32 +99,60 @@ async def create_tables(cursor: aiomysql.Cursor):
         """
     ]
 
-    alter_table_queries = [
-        """
-        ALTER TABLE `comments`
-        ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-        """,
-        """
-        ALTER TABLE `pages`
-        ADD CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-        ADD CONSTRAINT `pages_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-        """,
-        """
-        ALTER TABLE `posts`
-        ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`editor_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-        ADD CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-        """
+    alter_constraints = [
+        (
+            "comments",
+            "comments_ibfk_1",
+            """ALTER TABLE `comments` ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;"""
+        ),
+        (
+            "pages",
+            "pages_ibfk_1",
+            """ALTER TABLE `pages` ADD CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;"""
+        ),
+        (
+            "pages",
+            "pages_ibfk_2",
+            """ALTER TABLE `pages` ADD CONSTRAINT `pages_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;"""
+        ),
+        (
+            "posts",
+            "posts_ibfk_1",
+            """ALTER TABLE `posts` ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;"""
+        ),
+        (
+            "posts",
+            "posts_ibfk_2",
+            """ALTER TABLE `posts` ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`editor_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;"""
+        ),
+        (
+            "posts",
+            "posts_ibfk_3",
+            """ALTER TABLE `posts` ADD CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;"""
+        ),
     ]
 
     try:
-        for query in create_table_queries + alter_table_queries:
+        for query in create_table_queries:
             await cursor.execute(query)
 
-        await cursor.execute("""
-        INSERT INTO pages (slug, image, title, content, display, author_id, navbar_title, meta_title, meta_description, meta_keywords, meta_robots, language, redirect_url, parent_id, show_in_menu, category_id)
-        VALUES (NULL, NULL, "Homepage", NULL, "center", NULL, "Page Name", "Homepage", "This is the homepage, where articles are located.", "here, provide, keywords", "index, follow", "en", NULL, NULL, 0, NULL);
-        """)
+        for table_name, constraint_name, query in alter_constraints:
+            await cursor.execute(
+                """SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
+                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND CONSTRAINT_NAME = %s""",
+                (table_name, constraint_name)
+            )
+            exists = await cursor.fetchone()
+            if not exists:
+                await cursor.execute(query)
+
+        await cursor.execute("SELECT COUNT(*) FROM pages WHERE id = 1")
+        row = await cursor.fetchone()
+        if row and row[0] == 0:
+            await cursor.execute(
+                """INSERT INTO pages (id, slug, image, title, content, display, author_id, navbar_title, meta_title, meta_description, meta_keywords, meta_robots, language, redirect_url, parent_id, show_in_menu, category_id)
+                VALUES (1, NULL, NULL, 'Homepage', NULL, 'center', NULL, 'Page Name', 'Homepage', 'This is the homepage, where articles are located.', 'here, provide, keywords', 'index, follow', 'en', NULL, NULL, 0, NULL)"""
+            )
 
     except Exception as e:
         await cursor.connection.rollback()

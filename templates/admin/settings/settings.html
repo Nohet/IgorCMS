@@ -88,21 +88,27 @@
             </div>
             <div id="api_keys">
                 <p class="firstp">API Keys</p>
-                <button onclick="location.href = '/admin/settings/generate-api-key'" id="generateApiKey">Generate API Key
-                </button>
+                <form method="post" action="/admin/settings/generate-api-key">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" id="generateApiKey">Generate API Key
+                    </button>
+                </form>
                 <hr>
                 <ul>
                     {% for key in api_keys %}
                     <li>
                         {{ key[0]|safe }}
-                        <button onclick="location.href = '/admin/settings/delete-api-key?key={{ quote_plus(key[0])}}'"
-                                class="delete-button">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
-                            </svg>
-                        </button>
+                        <form method="post" action="/admin/settings/delete-api-key" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="api_key" value="{{ key[0]|e }}">
+                            <button type="submit" class="delete-button">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9 13h6m2 10H7a2 2 0 01-2-2V7h14v14a2 2 0 01-2 2zM10 7V4a2 2 0 012-2h0a2 2 0 012 2v3"/>
+                                </svg>
+                            </button>
+                        </form>
                     </li>
                     {% endfor %}
                 </ul>
@@ -122,7 +128,15 @@
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
-                    fetch("/api/upload-file", { method: "POST", body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" }) });
+                    fetch("/api/upload-file", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-Token": "{{ csrf_token }}"
+                        },
+                        credentials: "same-origin",
+                        body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" })
+                    });
                 };
                 console.log(123);
 

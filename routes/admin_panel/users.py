@@ -7,10 +7,20 @@ from models.user import UserJWT
 from utils.dependency_injection import dependency_injection
 
 
-async def admin_delete_user(request: Request):
-    user_id = int(request.query_params.get("id"))
-    await request.app.state.crud.users.delete(user_id)
-    return RedirectResponse("/admin/users/view")
+@dependency_injection(get_user)
+async def admin_delete_user(request: Request, user: UserJWT):
+    form_data = await request.form()
+    target_user_id = form_data.get('user_id')
+
+    if not target_user_id or not str(target_user_id).isdigit():
+        return RedirectResponse('/admin/users/view', status_code=303)
+
+    target_user_id = int(target_user_id)
+    if user and getattr(user, 'user_id', None) == target_user_id:
+        return RedirectResponse('/admin/users/view', status_code=303)
+
+    await request.app.state.crud.users.delete(target_user_id)
+    return RedirectResponse('/admin/users/view', status_code=303)
 
 
 @dependency_injection(get_user)

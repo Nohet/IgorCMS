@@ -63,9 +63,14 @@ async def admin_edit_page(request: Request, user: UserJWT):
 
 
 async def admin_delete_page(request: Request):
-    page_id = int(request.query_params.get("id"))
-    await request.app.state.crud.pages.delete(page_id)
-    return RedirectResponse("/admin/pages/view")
+    form_data = await request.form()
+    page_id = form_data.get('page_id')
+
+    if not page_id or not str(page_id).isdigit() or int(page_id) == 1:
+        return RedirectResponse('/admin/pages/view', status_code=303)
+
+    await request.app.state.crud.pages.delete(int(page_id))
+    return RedirectResponse('/admin/pages/view', status_code=303)
 
 
 @dependency_injection(get_user)

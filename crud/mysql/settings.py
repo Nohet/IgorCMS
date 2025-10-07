@@ -40,3 +40,18 @@ class SettingsCRUD:
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("DELETE FROM api_keys WHERE api_key = %s", (api_key,))
+
+    async def fetch_api_key_permissions(self, api_key: str):
+        if not api_key:
+            return None
+
+        async with self.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    """SELECT users.permissions FROM api_keys
+                    INNER JOIN users ON api_keys.user_id = users.id
+                    WHERE api_key = %s""", (api_key,)
+                )
+                row = await cursor.fetchone()
+
+        return row[0] if row else None

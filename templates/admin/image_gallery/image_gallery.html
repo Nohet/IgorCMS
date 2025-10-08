@@ -21,10 +21,16 @@
                 <p id="uploadPhotoText">Upload photo:</p>
                 <input type="file" id="new_image" name="new_image">
                 <p id="uploadStatus" class="upload-status" role="status" aria-live="polite"></p>
+                <p id="deleteStatus" class="upload-status" role="status" aria-live="polite"></p>
 
                 <div class="gallery">
                     {% for image in images%}
                     <div onclick="window.open('/static/image_storage/{{ image }}', '_blank');" class="gallery-item">
+                        <button type="button"
+                                class="delete-button"
+                                onclick="event.stopPropagation(); deleteImage(this, '{{ image }}');">
+                            Delete
+                        </button>
                         <img src="/static/image_storage/{{ image }}" alt="Image 1">
                         <div class="image-caption">{{ image }}</div>
                     </div>
@@ -36,6 +42,21 @@
     </div>
     <script>
         const uploadStatus = document.getElementById('uploadStatus');
+        const deleteStatus = document.getElementById('deleteStatus');
+        const csrfToken = "{{ csrf_token }}";
+
+        function resetStatus(element, message, state) {
+            if (!element) {
+                return;
+            }
+
+            element.textContent = message;
+            element.classList.remove('is-loading', 'is-success', 'is-error');
+
+            if (state) {
+                element.classList.add(state);
+            }
+        }
 
         document.getElementById('new_image').addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -55,7 +76,7 @@
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
-                                "X-CSRF-Token": "{{ csrf_token }}"
+                                "X-CSRF-Token": csrfToken
                             },
                             credentials: "same-origin",
                             body: JSON.stringify({ "image": e.target.result, "filename": file.name, "uploadKey": "{{ API_UPLOAD_KEY|safe }}" })
@@ -93,6 +114,46 @@
                 console.log('No file selected.');
             }
         });
+
+        async function deleteImage(button, filename) {
+            if (!filename) {
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete "${filename}"?`)) {
+                return;
+            }
+
+            resetStatus(deleteStatus, 'Deleting image...', 'is-loading');
+
+            try {
+                const response = await fetch("/admin/images/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": csrfToken
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ "filename": filename })
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Failed to delete image.');
+                }
+
+                const galleryItem = button?.closest('.gallery-item');
+                if (galleryItem) {
+                    galleryItem.remove();
+                }
+
+                resetStatus(deleteStatus, 'Image deleted successfully.', 'is-success');
+            } catch (error) {
+                console.error('Error:', error);
+                resetStatus(deleteStatus, error.message || 'Failed to delete image.', 'is-error');
+            }
+        }
     </script>
 </body>
 

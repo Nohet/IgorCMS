@@ -17,7 +17,7 @@ from plugin_manager.manager import PluginManager
 from routes.admin_panel.categories import admin_add_category, admin_view_categories, admin_delete_category, \
     admin_edit_category
 from routes.admin_panel.comments import admin_comments_view, admin_delete_comment
-from routes.admin_panel.images import admin_image_gallery
+from routes.admin_panel.images import admin_image_gallery, admin_delete_image
 from routes.admin_panel.login import admin_login, logout
 from routes.admin_panel.homepage import admin_homepage
 from routes.admin_panel.pages import admin_show_pages, admin_add_page, admin_delete_page, admin_edit_page
@@ -74,6 +74,7 @@ routes = [
 
     Route("/admin/settings", admin_settings, methods=["GET", "POST"]),
     Route("/admin/images/view", admin_image_gallery, methods=["GET"]),
+    Route("/admin/images/delete", admin_delete_image, methods=["POST"]),
 
     Route("/admin/plugins/view", admin_show_plugins, methods=["GET"]),
     Route("/admin/settings/generate-api-key", admin_generate_api_key, methods=["POST"]),

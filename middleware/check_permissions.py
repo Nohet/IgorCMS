@@ -24,3 +24,4 @@ class CheckPermissions(BaseHTTPMiddleware):
             return RedirectResponse("/admin/login")
 
         return await call_next(request)
+

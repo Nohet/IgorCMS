@@ -9,8 +9,14 @@ from constants.static import SECRET_KEY
 
 class CheckAuthorized(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if not request.url.path.startswith("/admin") or request.url.path == "/admin/login":
+        normalized_path = request.url.path.rstrip("/")
+        if not normalized_path:
+            normalized_path = "/"
+
+        if not normalized_path.startswith("/admin") or normalized_path == "/admin/login":
             return await call_next(request)
+
+        redirect_to_dashboard = normalized_path == "/admin"
 
         token = request.cookies.get("access_token")
 
@@ -47,5 +53,8 @@ class CheckAuthorized(BaseHTTPMiddleware):
             response = RedirectResponse("/admin/login")
             response.delete_cookie("access_token", httponly=True)
             return response
+
+        if redirect_to_dashboard:
+            return RedirectResponse("/admin/homepage")
 
         return await call_next(request)
